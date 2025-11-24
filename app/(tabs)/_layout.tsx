@@ -2,9 +2,8 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-import { useColorScheme } from '@/components/useColorScheme';
-import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/src/components/useColorScheme';
+import Colors from '@/src/constants/Colors';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -21,9 +20,6 @@ export default function TabLayout() {
         <Tabs
             screenOptions={{
                 tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-                // Disable the static render of the header on web
-                // to prevent a hydration error in React Navigation v6.
-                headerShown: useClientOnlyValue(false, true),
             }}
         >
             <Tabs.Screen

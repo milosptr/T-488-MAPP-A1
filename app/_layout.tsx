@@ -6,7 +6,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/components/useColorScheme';
+import { useColorScheme } from '@/src/components/useColorScheme';
+import { useStore } from '@/src/store/useStore';
 
 export {
     // Catch any errors thrown by the Layout component.
@@ -26,6 +27,12 @@ export default function RootLayout() {
         SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
         ...FontAwesome.font,
     });
+    const initializeStore = useStore(state => state.initializeStore);
+
+    // Initialize store on app load
+    useEffect(() => {
+        initializeStore();
+    }, [initializeStore]);
 
     // Expo Router uses Error Boundaries to catch errors in the navigation tree.
     useEffect(() => {

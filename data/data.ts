@@ -1,4 +1,4 @@
-import type { Data } from '../types/data';
+import type { Data } from '../src/types/data';
 
 export const data: Data = {
     boards: [
