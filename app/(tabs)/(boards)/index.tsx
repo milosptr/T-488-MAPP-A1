@@ -4,9 +4,11 @@ import { BoardCard } from '@/src/components/cards/BoardCard';
 import { SafeAreaScreen } from '@/src/components/SafeAreaScreen';
 import { Text, View } from '@/src/components/Themed';
 import { useStore } from '@/src/store/useStore';
+import { useRouter } from 'expo-router';
 
 export default function BoardsScreen() {
     const boards = useStore(state => state.boards);
+    const router = useRouter();
 
     return (
         <SafeAreaScreen>
@@ -15,7 +17,11 @@ export default function BoardsScreen() {
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View>
                         {boards.map(board => (
-                            <BoardCard key={board.id} board={board} />
+                            <BoardCard
+                                key={board.id}
+                                board={board}
+                                onPress={() => router.push(`/single-board?id=${board.id}`)}
+                            />
                         ))}
                     </View>
                 </ScrollView>

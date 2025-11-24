@@ -8,9 +8,10 @@ interface StoreState {
     tasks: Task[];
     initializeStore: () => void;
     resetStore: () => void;
+    getTasksByBoardId: (boardId: number) => Task[];
 }
 
-export const useStore = create<StoreState>(set => ({
+export const useStore = create<StoreState>((set, get) => ({
     boards: [],
     lists: [],
     tasks: [],
@@ -29,5 +30,15 @@ export const useStore = create<StoreState>(set => ({
             lists: data.lists,
             tasks: data.tasks,
         });
+    },
+
+    getTasksByBoardId: (boardId: number) => {
+        if (!boardId) {
+            return [];
+        }
+
+        const lists = get().lists.filter(list => list.boardId === boardId);
+        const listIds = new Set(lists.map(list => list.id));
+        return get().tasks.filter(task => listIds.has(task.listId));
     },
 }));
