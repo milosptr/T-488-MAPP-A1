@@ -72,7 +72,7 @@ The application is designed to implement the following features based on assignm
 
 - Additional features may be implemented beyond the core requirements for enhanced functionality and higher grades
 
-**Current Status:** The project is in early development phase. Data structures and type definitions are established, and the Expo Router navigation setup is in place.
+**Current Status:** The project is in early development phase. Data structures and type definitions are established, Expo Router navigation is configured, and Zustand state management is implemented with initialize and reset capabilities.
 
 ## Technologies Used
 
@@ -81,7 +81,8 @@ The application is designed to implement the following features based on assignm
 - Expo Router (~6.0.15) - File-based routing and navigation
 - React Navigation (v7.1.8)
 - TypeScript (~5.9.2)
-- State Management Solution: In-memory data management (data stored locally in `data/data.ts`)
+- Zustand - Lightweight state management with initialize and reset capabilities
+- State Management: In-memory data management with Zustand store (initial data loaded from `data/data.ts`)
 - Expo Vector Icons (v15.0.3)
 - React (v19.1.0)
 - ESLint (v9.39.1) - Code quality and linting
@@ -118,23 +119,27 @@ MAPP/
 │   │   ├── _layout.tsx          # Tab layout configuration
 │   │   ├── index.tsx            # Boards tab screen
 │   │   └── settings.tsx         # Settings tab screen
-│   ├── _layout.tsx              # Root layout
+│   ├── _layout.tsx              # Root layout (with store initialization)
 │   └── +not-found.tsx           # 404 error screen
 ├── assets/                       # Static assets (images, fonts)
 │   ├── fonts/                   # Custom fonts
 │   └── images/                  # App icons and images
-├── components/                   # Reusable React components
-│   ├── EditScreenInfo.tsx
-│   ├── ExternalLink.tsx
-│   ├── StyledText.tsx
-│   ├── Themed.tsx
-│   └── useColorScheme.ts
-├── constants/                    # App-wide constants
-│   └── Colors.ts                # Color definitions
+├── src/                          # Source code
+│   ├── components/              # Reusable React components
+│   │   ├── EditScreenInfo.tsx
+│   │   ├── ExternalLink.tsx
+│   │   ├── StyledText.tsx
+│   │   └── Themed.tsx
+│   ├── hooks/                   # Custom React hooks
+│   │   ├── useColorScheme.ts
+│   ├── constants/               # App-wide constants
+│   │   └── Colors.ts            # Color definitions
+│   ├── store/                   # State management
+│   │   └── useStore.ts          # Zustand store with boards, lists, tasks
+│   └── types/                   # TypeScript type definitions
+│       └── data.ts              # Data model interfaces (Board, List, Task)
 ├── data/                         # Data layer
 │   └── data.ts                  # Pre-populated sample data
-├── types/                        # TypeScript type definitions
-│   └── data.ts                  # Data model interfaces (Board, List, Task)
 ├── app.json                      # Expo configuration
 ├── package.json                  # Dependencies and scripts
 ├── tsconfig.json                # TypeScript configuration
@@ -145,12 +150,15 @@ MAPP/
 **Key Directory Explanations:**
 
 - `/app` - Contains all screens using Expo Router's file-based routing system
-- `/components` - Reusable UI components used across multiple screens
-- `/constants` - Global constants like color schemes
-- `/data` - Pre-populated data that serves as the in-memory database
-- `/types` - TypeScript interfaces and type definitions for type safety
+- `/src` - Main source code directory containing components, hooks, state management, constants, and types
+- `/src/components` - Reusable UI components used across multiple screens
+- `/src/hooks` - Custom React hooks (e.g., useColorScheme)
+- `/src/store` - Zustand state management store with initialize and reset functionality
+- `/src/constants` - Global constants like color schemes
+- `/src/types` - TypeScript interfaces and type definitions for type safety
+- `/data` - Pre-populated data that serves as the in-memory database (loaded into store on app startup)
 
-**Data Models (defined in `types/data.ts`):**
+**Data Models (defined in `src/types/data.ts`):**
 
 **Board:**
 
@@ -173,6 +181,29 @@ MAPP/
 - description: string
 - isFinished: boolean (completion status)
 - listId: number (reference to parent list)
+
+**State Management (Zustand Store - `src/store/useStore.ts`):**
+
+The application uses Zustand for lightweight state management with the following features:
+
+- **Store State:** Contains boards, lists, and tasks arrays
+- **Initialize Pattern:** Store starts empty and loads data on app startup via `initializeStore()` called in `app/_layout.tsx`
+- **Reset Functionality:** `resetStore()` method resets all data back to initial state from `data/data.ts`
+- **Future-Ready:** Architecture supports extending to AsyncStorage, API integration, or other data sources
+
+**Usage Example:**
+
+```typescript
+import { useStore } from '@/src/store/useStore';
+
+// Access state
+const boards = useStore(state => state.boards);
+const lists = useStore(state => state.lists);
+const tasks = useStore(state => state.tasks);
+
+// Reset data
+const resetStore = useStore(state => state.resetStore);
+```
 
 ## Setup Instructions
 
@@ -235,19 +266,7 @@ MAPP/
 
 ## Testing
 
-The project includes a basic testing setup using React Test Renderer.
-
-**Run tests:**
-
-```bash
-npm test
-```
-
-**Current test coverage:**
-
-- Sample test for `StyledText` component located in `components/__tests__/StyledText-test.js`
-
-**Note:** Additional tests will be added as features are implemented. Students are encouraged to write unit tests for components and integration tests for data operations.
+Testing infrastructure will be added as features are implemented. Students are encouraged to write unit tests for components and integration tests for data operations as the application develops.
 
 ## Screenshots
 
@@ -269,7 +288,7 @@ No known issues currently.
 
 **Important Note:**
 
-- **Data Persistence:** All data is stored in memory using pre-populated data from `data/data.ts`. Any changes made during runtime (creating, updating, or deleting boards, lists, or tasks) will be lost when the application restarts. This is intentional for the current assignment phase as specified in the requirements. Each time the app starts, it reloads the original data from the data file.
+- **Data Persistence:** All data is stored in memory using Zustand state management. The store is initialized with pre-populated data from `data/data.ts` when the app starts (via `initializeStore()` in `app/_layout.tsx`). Any changes made during runtime (creating, updating, or deleting boards, lists, or tasks) will be lost when the application restarts. This is intentional for the current assignment phase as specified in the requirements. Each time the app starts, it reloads the original data from the data file. The `resetStore()` function can also be used to reset data back to initial state without restarting the app.
 
 ## Future Improvements
 
@@ -311,7 +330,7 @@ No known issues currently.
 
 ### Code Quality and Performance
 
-- Increase test coverage (unit and integration tests)
+- Add comprehensive test coverage (unit and integration tests)
 - Implement CI/CD pipeline
 - Add performance monitoring
 - Optimize rendering for large datasets
