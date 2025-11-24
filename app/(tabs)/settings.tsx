@@ -1,28 +1,24 @@
 import { StyleSheet } from 'react-native';
 
+import { SafeAreaScreen } from '@/src/components/SafeAreaScreen';
 import { Text, View } from '@/src/components/Themed';
 
 export default function SettingsScreen() {
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Settings screen if we might need it</Text>
-        </View>
+        <SafeAreaScreen>
+            <View style={styles.container}>
+                <Text style={styles.title}>Settings</Text>
+            </View>
+        </SafeAreaScreen>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     title: {
         fontSize: 20,
         fontWeight: 'bold',
-    },
-    separator: {
-        marginVertical: 30,
-        height: 1,
-        width: '80%',
     },
 });
