@@ -10,7 +10,9 @@ type Props = {
 export const ScreenHeader = ({ title, rightAction }: Props) => {
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{title}</Text>
+            <View style={styles.titleContainer}>
+                <Text style={styles.title}>{title}</Text>
+            </View>
             {rightAction?.()}
         </View>
     );
@@ -22,6 +24,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: 12,
+    },
+    titleContainer: {
+        flexShrink: 1,
     },
     title: {
         fontSize: 24,

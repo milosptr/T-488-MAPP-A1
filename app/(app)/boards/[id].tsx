@@ -1,14 +1,14 @@
 import { Button } from '@/src/components/button';
 import { ListCard } from '@/src/components/cards/ListCard';
 import { SafeAreaScreen } from '@/src/components/SafeAreaScreen';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { Text, View } from '@/src/components/Themed';
+import Colors from '@/src/constants/Colors';
 import { useTheme } from '@/src/hooks/useTheme';
 import { useStore } from '@/src/store/useStore';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Redirect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { Pressable, ScrollView, StyleSheet } from 'react-native';
 
 export default function SingleBoardScreen() {
     const { id } = useLocalSearchParams();
@@ -28,13 +28,22 @@ export default function SingleBoardScreen() {
     const router = useRouter();
 
     useEffect(() => {
-        if (board && board.name.length > 0) {
-            let title = board.name.slice(0, 20);
-            if (title.length < board.name.length) {
-                title += '...';
-            }
+        if (!!board) {
             navigation.setOptions({
-                title,
+                headerRight: () => (
+                    <Pressable
+                        style={styles.addListButton}
+                        onPress={() => router.push(`/modals/add-list?boardId=${board.id}`)}
+                    >
+                        <MaterialCommunityIcons
+                            name="plus"
+                            size={16}
+                            color={theme.white}
+                            strokeWidth={2}
+                        />
+                        <Text style={styles.addListButtonText}>Add New List</Text>
+                    </Pressable>
+                ),
             });
         }
     }, [board, navigation]);
@@ -46,24 +55,10 @@ export default function SingleBoardScreen() {
     return (
         <SafeAreaScreen edges={[]} paddingTop={24}>
             <View style={styles.container}>
-                <ScreenHeader
-                    title={board.name}
-                    rightAction={() => (
-                        <Button
-                            size="small"
-                            title="Add List"
-                            leadingIcon={
-                                <MaterialCommunityIcons
-                                    name="plus"
-                                    size={16}
-                                    color={theme.onButton}
-                                />
-                            }
-                            onPress={() => router.push(`/modals/add-list?boardId=${board.id}`)}
-                        />
-                    )}
-                />
-                <Text style={styles.description}>{board.description}</Text>
+                <View>
+                    <Text style={styles.boardTitle}>{board.name}</Text>
+                    <Text style={styles.description}>{board.description}</Text>
+                </View>
                 <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -74,55 +69,91 @@ export default function SingleBoardScreen() {
                         const tasks = allTasks.filter(t => t.listId === list.id);
 
                         return (
-                            <View key={list.id} style={[styles.column, { borderColor: theme.border }]}>
+                            <View
+                                key={list.id}
+                                style={[styles.column, { borderColor: theme.border }]}
+                            >
                                 <ListCard list={list} onPress={() => {}} />
 
                                 <Button
                                     size="small"
                                     title="Add Task"
-                                    onPress={() => router.push(`/modals/add-task?listId=${list.id}`)}
+                                    onPress={() =>
+                                        router.push(`/modals/add-task?listId=${list.id}`)
+                                    }
                                 />
 
                                 <View style={styles.tasksList}>
                                     {tasks.map(task => {
-                                        const currentListIndex = lists.findIndex(l => l.id === list.id);
+                                        const currentListIndex = lists.findIndex(
+                                            l => l.id === list.id
+                                        );
                                         const nextList = lists[currentListIndex + 1];
 
                                         return (
-                                            <View key={task.id} style={[styles.taskCard, { borderColor: theme.border }]}>
+                                            <View
+                                                key={task.id}
+                                                style={[
+                                                    styles.taskCard,
+                                                    { borderColor: theme.border },
+                                                ]}
+                                            >
                                                 <View style={styles.taskRow}>
                                                     <Button
                                                         size="small"
                                                         title=""
                                                         leadingIcon={
                                                             <MaterialCommunityIcons
-                                                                name={task.isFinished ? 'checkbox-marked' : 'checkbox-blank-outline'}
+                                                                name={
+                                                                    task.isFinished
+                                                                        ? 'checkbox-marked'
+                                                                        : 'checkbox-blank-outline'
+                                                                }
                                                                 size={20}
                                                                 color={theme.text}
                                                             />
                                                         }
                                                         variant="outlined"
-                                                        onPress={() => updateTask({ ...task, isFinished: !task.isFinished })}
+                                                        onPress={() =>
+                                                            updateTask({
+                                                                ...task,
+                                                                isFinished: !task.isFinished,
+                                                            })
+                                                        }
                                                     />
                                                     <View style={styles.taskContent}>
-                                                        <Text style={[
-                                                            styles.taskName,
-                                                            {
-                                                                color: theme.text,
-                                                                textDecorationLine: task.isFinished ? 'line-through' : 'none',
-                                                                opacity: task.isFinished ? 0.6 : 1
-                                                            }
-                                                        ]}>
+                                                        <Text
+                                                            style={[
+                                                                styles.taskName,
+                                                                {
+                                                                    color: theme.text,
+                                                                    textDecorationLine:
+                                                                        task.isFinished
+                                                                            ? 'line-through'
+                                                                            : 'none',
+                                                                    opacity: task.isFinished
+                                                                        ? 0.6
+                                                                        : 1,
+                                                                },
+                                                            ]}
+                                                        >
                                                             {task.name}
                                                         </Text>
-                                                        <Text style={[
-                                                            styles.taskDesc,
-                                                            {
-                                                                color: theme.textMuted,
-                                                                textDecorationLine: task.isFinished ? 'line-through' : 'none',
-                                                                opacity: task.isFinished ? 0.6 : 1
-                                                            }
-                                                        ]}>
+                                                        <Text
+                                                            style={[
+                                                                styles.taskDesc,
+                                                                {
+                                                                    color: theme.textMuted,
+                                                                    textDecorationLine:
+                                                                        task.isFinished
+                                                                            ? 'line-through'
+                                                                            : 'none',
+                                                                    opacity: task.isFinished
+                                                                        ? 0.6
+                                                                        : 1,
+                                                                },
+                                                            ]}
+                                                        >
                                                             {task.description}
                                                         </Text>
                                                     </View>
@@ -137,7 +168,9 @@ export default function SingleBoardScreen() {
                                                                     color={theme.onButton}
                                                                 />
                                                             }
-                                                            onPress={() => moveTask(task.id, nextList.id)}
+                                                            onPress={() =>
+                                                                moveTask(task.id, nextList.id)
+                                                            }
                                                         />
                                                     )}
                                                 </View>
@@ -149,7 +182,6 @@ export default function SingleBoardScreen() {
                         );
                     })}
                 </ScrollView>
-
             </View>
         </SafeAreaScreen>
     );
@@ -159,6 +191,21 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         gap: 24,
+    },
+    addListButton: {
+        padding: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+    },
+    addListButtonText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: Colors.light.white,
+    },
+    boardTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
     },
     title: {
         fontSize: 20,
@@ -173,7 +220,6 @@ const styles = StyleSheet.create({
     listsContainer: {
         gap: 12,
         paddingBottom: 24,
-        paddingHorizontal: 12,
     },
     column: {
         width: 320,
