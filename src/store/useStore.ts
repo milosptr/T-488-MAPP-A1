@@ -15,6 +15,10 @@ interface StoreState {
 
     updateTask: (updatedTask: Task) => void;
     moveTask: (taskId: number, toListId: number) => void;
+    addTask: (
+        listId: number,
+        task: { name: string; description?: string; isFinished?: boolean }
+    ) => number;
     addList: (list: List) => void;
     deleteList: (id: number) => void;
     updateList: (updatedList: List) => void;
@@ -71,6 +75,19 @@ const useStoreBase = create<StoreState>((set, get) => ({
         set({
             tasks: get().tasks.map(t => (t.id === taskId ? { ...t, listId: toListId } : t)),
         });
+    },
+    addTask: (listId: number, task) => {
+        const tasks = get().tasks;
+        const nextId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
+        const newTask: Task = {
+            id: nextId,
+            name: task.name,
+            description: task.description || '',
+            isFinished: !!task.isFinished,
+            listId,
+        };
+        set({ tasks: [...get().tasks, newTask] });
+        return nextId;
     },
 }));
 
