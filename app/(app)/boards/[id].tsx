@@ -8,7 +8,7 @@ import { useStore } from '@/src/store/useStore';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Redirect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { Pressable, ScrollView, StyleSheet } from 'react-native';
 
 export default function SingleBoardScreen() {
     const { id } = useLocalSearchParams();
@@ -85,6 +85,9 @@ export default function SingleBoardScreen() {
 
                                 <View style={styles.tasksList}>
                                     {tasks.map(task => {
+                                        const currentListIndex = lists.findIndex(l => l.id === list.id);
+                                        const nextList = lists[currentListIndex + 1];
+
                                         return (
                                             <View key={task.id} style={[styles.taskCard, { borderColor: theme.border }]}>
                                                 <View style={styles.taskRow}>
@@ -101,7 +104,10 @@ export default function SingleBoardScreen() {
                                                         variant="outlined"
                                                         onPress={() => updateTask({ ...task, isFinished: !task.isFinished })}
                                                     />
-                                                    <View style={styles.taskContent}>
+                                                    <Pressable
+                                                        style={styles.taskContent}
+                                                        onLongPress={() => router.push(`/modals/edit-task?id=${task.id}`)}
+                                                    >
                                                         <Text style={[
                                                             styles.taskName,
                                                             {
@@ -122,20 +128,21 @@ export default function SingleBoardScreen() {
                                                         ]}>
                                                             {task.description}
                                                         </Text>
-                                                    </View>
-                                                    <Button
-                                                        size="small"
-                                                        title=""
-                                                        leadingIcon={
-                                                            <MaterialCommunityIcons
-                                                                name="pencil"
-                                                                size={16}
-                                                                color={theme.text}
-                                                            />
-                                                        }
-                                                        variant="outlined"
-                                                        onPress={() => router.push(`/modals/edit-task?id=${task.id}`)}
-                                                    />
+                                                    </Pressable>
+                                                    {nextList && (
+                                                        <Button
+                                                            size="small"
+                                                            title=""
+                                                            trailingIcon={
+                                                                <MaterialCommunityIcons
+                                                                    name="arrow-right"
+                                                                    size={16}
+                                                                    color={theme.onButton}
+                                                                />
+                                                            }
+                                                            onPress={() => moveTask(task.id, nextList.id)}
+                                                        />
+                                                    )}
                                                 </View>
                                             </View>
                                         );
@@ -188,7 +195,6 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 10,
     },
-
     taskRow: {
         flexDirection: 'row',
         alignItems: 'center',
