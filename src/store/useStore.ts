@@ -15,6 +15,7 @@ interface StoreState {
     deleteBoard: (id: number) => void;
 
     updateTask: (updatedTask: Task) => void;
+    deleteTask: (id: number) => void;
     moveTask: (taskId: number, toListId: number) => void;
     addTask: (
         listId: number,
@@ -79,6 +80,9 @@ const useStoreBase = create<StoreState>((set, get) => ({
         set({
             tasks: get().tasks.map(t => (t.id === updatedTask.id ? updatedTask : t)),
         });
+    },
+    deleteTask: (id: number) => {
+        set({ tasks: get().tasks.filter(task => task.id !== id) });
     },
     moveTask: (taskId: number, toListId: number) => {
         set({

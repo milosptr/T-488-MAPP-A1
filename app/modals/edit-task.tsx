@@ -1,6 +1,7 @@
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
+    Alert,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
@@ -37,21 +38,22 @@ export default function EditTaskScreen() {
     const router = useRouter();
     const theme = useTheme();
     const task = useStore(state => state.tasks.find(task => task.id === Number(id)));
+    const updateTask = useStore(state => state.updateTask);
+    const deleteTask = useStore(state => state.deleteTask);
+    const allLists = useStore(state => state.lists);
+
+    const [taskName, setTaskName] = useState(task?.name || '');
+    const [taskDescription, setTaskDescription] = useState(task?.description || '');
+    const [selectedListId, setSelectedListId] = useState(task?.listId || 0);
+    const [showListPicker, setShowListPicker] = useState(false);
+    const [errors, setErrors] = useState<FormErrors>(INITIAL_ERRORS);
 
     if (!task) {
         return <Redirect href="/+not-found" />;
     }
 
-    const updateTask = useStore(state => state.updateTask);
-    const allLists = useStore(state => state.lists);
     const currentList = allLists.find(l => l.id === task.listId);
     const boardLists = allLists.filter(l => l.boardId === currentList?.boardId);
-
-    const [taskName, setTaskName] = useState(task.name);
-    const [taskDescription, setTaskDescription] = useState(task.description);
-    const [selectedListId, setSelectedListId] = useState(task.listId);
-    const [showListPicker, setShowListPicker] = useState(false);
-    const [errors, setErrors] = useState<FormErrors>(INITIAL_ERRORS);
 
     const handleNameChange = useCallback((text: string) => {
         setTaskName(text);
@@ -98,6 +100,29 @@ export default function EditTaskScreen() {
         });
         router.back();
     }, [validateForm, updateTask, task, taskName, taskDescription, selectedListId, router]);
+
+    const handleDeleteTask = useCallback(() => {
+        Alert.alert(
+            'Delete Task',
+            `Are you sure you want to delete "${task.name}"?`,
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Delete',
+                    style: 'destructive',
+                    onPress: () => {
+                        router.back();
+                        setTimeout(() => {
+                            deleteTask(task.id);
+                        }, 100);
+                    },
+                },
+            ]
+        );
+    }, [task, deleteTask, router]);
 
     return (
         <SafeAreaScreen edges={['bottom']} paddingTop={24}>
@@ -200,6 +225,11 @@ export default function EditTaskScreen() {
 
                     <View style={styles.buttonContainer}>
                         <Button title="Update Task" onPress={handleUpdateTask} />
+                        <Button
+                            title="Delete Task"
+                            onPress={handleDeleteTask}
+                            variant="danger"
+                        />
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -266,5 +296,6 @@ const styles = StyleSheet.create({
     buttonContainer: {
         marginTop: 8,
         marginBottom: 24,
+        gap: 12,
     },
 });
