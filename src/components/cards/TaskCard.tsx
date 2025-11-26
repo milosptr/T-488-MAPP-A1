@@ -5,7 +5,7 @@ import type { Task } from '@/src/types/data';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 
 interface TaskCardProps {
     task: Task;
@@ -19,7 +19,8 @@ export function TaskCard({ task, listColor, onToggleComplete }: TaskCardProps) {
     const router = useRouter();
 
     return (
-        <Pressable
+        <TouchableOpacity
+            activeOpacity={0.8}
             onPress={() => router.push(`/modals/edit-task?id=${task.id}`)}
             style={[
                 styles.card,
@@ -85,7 +86,7 @@ export function TaskCard({ task, listColor, onToggleComplete }: TaskCardProps) {
                     ) : null}
                 </View>
             </View>
-        </Pressable>
+        </TouchableOpacity>
     );
 }
 
