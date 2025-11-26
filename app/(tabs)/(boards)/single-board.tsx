@@ -19,6 +19,7 @@ export default function SingleBoardScreen() {
     const allTasks = useStore(state => state.tasks);
     const addTask = useStore(state => state.addTask);
     const moveTask = useStore(state => state.moveTask);
+    const updateTask = useStore(state => state.updateTask);
 
     const lists = React.useMemo(
         () => allLists.filter(list => list.boardId === Number(id)),
@@ -97,9 +98,38 @@ export default function SingleBoardScreen() {
                                         return (
                                             <View key={task.id} style={[styles.taskCard, { borderColor: theme.border }]}> 
                                                 <View style={styles.taskRow}>
+                                                    <Button
+                                                        size="small"
+                                                        title=""
+                                                        leadingIcon={
+                                                            <MaterialCommunityIcons
+                                                                name={task.isFinished ? 'checkbox-marked' : 'checkbox-blank-outline'}
+                                                                size={20}
+                                                                color={theme.text}
+                                                            />
+                                                        }
+                                                        variant="outlined"
+                                                        onPress={() => updateTask({ ...task, isFinished: !task.isFinished })}
+                                                    />
                                                     <View style={styles.taskContent}>
-                                                        <Text style={[styles.taskName, { color: theme.text }]}>{task.name}</Text>
-                                                        <Text style={[styles.taskDesc, { color: theme.textMuted }]}>
+                                                        <Text style={[
+                                                            styles.taskName, 
+                                                            { 
+                                                                color: theme.text,
+                                                                textDecorationLine: task.isFinished ? 'line-through' : 'none',
+                                                                opacity: task.isFinished ? 0.6 : 1
+                                                            }
+                                                        ]}>
+                                                            {task.name}
+                                                        </Text>
+                                                        <Text style={[
+                                                            styles.taskDesc, 
+                                                            { 
+                                                                color: theme.textMuted,
+                                                                textDecorationLine: task.isFinished ? 'line-through' : 'none',
+                                                                opacity: task.isFinished ? 0.6 : 1
+                                                            }
+                                                        ]}>
                                                             {task.description}
                                                         </Text>
                                                     </View>
