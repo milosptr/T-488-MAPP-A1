@@ -3,6 +3,7 @@ import { borderRadius, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks/useTheme';
 import type { Task } from '@/src/types/data';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
@@ -23,9 +24,11 @@ export function TaskCard({
 }: TaskCardProps) {
     const theme = useTheme();
     const isCompleted = task.isFinished;
+    const router = useRouter();
 
     return (
-        <View
+        <Pressable
+            onLongPress={() => router.push(`/modals/edit-task?id=${task.id}`)}
             style={[
                 styles.card,
                 {
@@ -50,23 +53,13 @@ export function TaskCard({
                     style={({ pressed }) => [
                         styles.checkbox,
                         {
-                            backgroundColor: isCompleted
-                                ? listColor || theme.tint
-                                : 'transparent',
-                            borderColor: isCompleted
-                                ? listColor || theme.tint
-                                : theme.border,
+                            backgroundColor: isCompleted ? listColor || theme.tint : 'transparent',
+                            borderColor: isCompleted ? listColor || theme.tint : theme.border,
                             transform: [{ scale: pressed ? 0.9 : 1 }],
                         },
                     ]}
                 >
-                    {isCompleted && (
-                        <MaterialCommunityIcons
-                            name="check"
-                            size={14}
-                            color="#fff"
-                        />
-                    )}
+                    {isCompleted && <MaterialCommunityIcons name="check" size={14} color="#fff" />}
                 </Pressable>
 
                 <View style={styles.textContent}>
@@ -106,9 +99,7 @@ export function TaskCard({
                         style={({ pressed }) => [
                             styles.moveButton,
                             {
-                                backgroundColor: pressed
-                                    ? theme.border
-                                    : 'transparent',
+                                backgroundColor: pressed ? theme.border : 'transparent',
                             },
                         ]}
                     >
@@ -120,7 +111,7 @@ export function TaskCard({
                     </Pressable>
                 )}
             </View>
-        </View>
+        </Pressable>
     );
 }
 
