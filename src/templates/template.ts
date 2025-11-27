@@ -1,16 +1,4 @@
-import type { List } from '../types/data';
-
-export interface ListTemplate {
-    name: string;
-    color: string;
-}
-
-export interface BoardTemplate {
-    id: string;
-    name: string;
-    description?: string;
-    lists: ListTemplate[];
-}
+import type { BoardTemplate, List } from '../types/data';
 
 export const BOARD_TEMPLATES: BoardTemplate[] = [
     {

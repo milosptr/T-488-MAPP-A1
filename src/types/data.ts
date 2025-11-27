@@ -25,3 +25,15 @@ export interface Data {
     lists: List[];
     tasks: Task[];
 }
+
+export interface ListTemplate {
+    name: string;
+    color: string;
+}
+
+export interface BoardTemplate {
+    id: string;
+    name: string;
+    description?: string;
+    lists: ListTemplate[];
+}
