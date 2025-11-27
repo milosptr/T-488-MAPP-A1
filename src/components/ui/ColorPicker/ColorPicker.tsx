@@ -1,23 +1,9 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { useTheme } from '../hooks/useTheme';
-import { Text } from './Themed';
-
-export const PRESET_COLORS = [
-    '#E53935',
-    '#FB8C00',
-    '#FDD835',
-    '#7CB342',
-    '#43A047',
-    '#00897B',
-    '#00ACC1',
-    '#29B6F6',
-    '#3949AB',
-    '#8E24AA',
-    '#D81B60',
-    '#F06292',
-];
+import { PRESET_COLORS } from '@/src/constants/Colors';
+import { useTheme } from '@/src/hooks/useTheme';
+import { Text } from '../Themed';
 
 interface ColorPickerProps {
     selectedColor: string;

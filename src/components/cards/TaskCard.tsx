@@ -1,4 +1,4 @@
-import { Text, View } from '@/src/components/Themed';
+import { Text, View } from '@/src/components/ui/Themed';
 import { borderRadius, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks/useTheme';
 import type { Task } from '@/src/types/data';

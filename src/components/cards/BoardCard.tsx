@@ -1,4 +1,6 @@
-import { Text, View } from '@/src/components/Themed';
+import { Text, View } from '@/src/components/ui/Themed';
+import { GlassView } from '@/src/components/ui/GlassView';
+import { BoardBottomSheetModal } from '@/src/components/bottom-sheet';
 import { useTheme } from '@/src/hooks/useTheme';
 import { useShallowStore } from '@/src/store/useStore';
 import type { Board } from '@/src/types/data';
@@ -8,8 +10,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useRef } from 'react';
 import { Image, Platform, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
-import { BoardBottomSheetModal } from '../BoardBottomSheetModal';
-import { GlassView } from '../GlassView';
 
 const PRESSED_OPACITY = 0.8;
 const GRADIENT_COLORS = ['rgba(0, 0, 0, 0.5)', 'transparent'] as const;

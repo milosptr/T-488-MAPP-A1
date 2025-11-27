@@ -4,7 +4,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import type { Edge } from 'react-native-safe-area-context';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { View } from './Themed';
+import { View } from '../ui/Themed';
 
 type SafeAreaScreenProps = {
     children?: ReactNode;

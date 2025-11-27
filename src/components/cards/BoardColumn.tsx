@@ -1,6 +1,5 @@
-import { TaskCard } from '@/src/components/cards/TaskCard';
-import { EditListBottomSheetModal } from '@/src/components/EditListBottomSheetModal';
-import { Text, View } from '@/src/components/Themed';
+import { EditListBottomSheetModal } from '@/src/components/bottom-sheet';
+import { Text, View } from '@/src/components/ui/Themed';
 import { borderRadius, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks/useTheme';
 import { useStore } from '@/src/store/useStore';
@@ -10,6 +9,7 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { TaskCard } from './TaskCard';
 
 interface BoardColumnProps {
     list: List;

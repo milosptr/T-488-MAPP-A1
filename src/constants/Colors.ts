@@ -1,3 +1,18 @@
+export const PRESET_COLORS = [
+    '#E53935',
+    '#FB8C00',
+    '#FDD835',
+    '#7CB342',
+    '#43A047',
+    '#00897B',
+    '#00ACC1',
+    '#29B6F6',
+    '#3949AB',
+    '#8E24AA',
+    '#D81B60',
+    '#F06292',
+];
+
 const palette = {
     primaryDark: '#1B3C53',
     primary: '#234C6A',
