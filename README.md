@@ -85,6 +85,7 @@ The application features full CRUD operations for boards, lists, and tasks, with
 
 **Additional useful commands:**
 
+- `npm run test` - Run linting, format checking, and type checking (combined validation)
 - `npm run lint` - Run ESLint to check code quality
 - `npm run lint:fix` - Automatically fix ESLint issues
 - `npm run format` - Format code with Prettier

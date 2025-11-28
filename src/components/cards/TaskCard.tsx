@@ -131,7 +131,6 @@ const styles = StyleSheet.create({
     card: {
         borderRadius: borderRadius.md,
         marginBottom: spacing.sm,
-        overflow: 'hidden',
     },
     cardContent: {
         flexDirection: 'row',

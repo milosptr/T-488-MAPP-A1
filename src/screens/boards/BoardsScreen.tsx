@@ -7,8 +7,10 @@ import { useTheme } from '@/src/hooks/useTheme';
 import { useStore } from '@/src/store/useStore';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const BoardsScreen = () => {
+    const { bottom: bottomPadding } = useSafeAreaInsets();
     const theme = useTheme();
     const boards = useStore(state => state.boards);
     const resetStore = useStore(state => state.resetStore);
@@ -66,7 +68,7 @@ export const BoardsScreen = () => {
                     )}
                 />
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <View style={styles.boardsContainer}>
+                    <View style={[styles.boardsContainer, { paddingBottom: bottomPadding }]}>
                         {boards.map(board => (
                             <BoardCard key={board.id} board={board} />
                         ))}

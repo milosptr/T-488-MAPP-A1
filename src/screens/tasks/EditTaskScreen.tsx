@@ -199,7 +199,10 @@ export const EditTaskScreen = () => {
                                             ]}
                                         />
                                         <Text
-                                            style={[styles.listOptionText, { color: theme.onSurface }]}
+                                            style={[
+                                                styles.listOptionText,
+                                                { color: theme.onSurface },
+                                            ]}
                                         >
                                             {list.name}
                                         </Text>

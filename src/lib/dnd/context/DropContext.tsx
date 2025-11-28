@@ -44,13 +44,17 @@ const DragOverlay = ({
         top: overlay.originY,
         width: overlay.width,
         height: overlay.height,
-        transform: [{ translateX: translationX.value }, { translateY: translationY.value }],
+        transform: [
+            { translateX: translationX.value },
+            { translateY: translationY.value },
+            { scale: 1.02 },
+        ],
         zIndex: 9999,
     }));
 
     return (
         <Animated.View pointerEvents="none" style={animatedStyle}>
-            {overlay.content}
+            <View style={styles.shadowWrapper}>{overlay.content}</View>
         </Animated.View>
     );
 };
@@ -247,6 +251,13 @@ const styles = StyleSheet.create({
     overlayContainer: {
         ...StyleSheet.absoluteFillObject,
         zIndex: 9999,
+    },
+    shadowWrapper: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.35,
+        shadowRadius: 12,
+        elevation: 12,
     },
 });
 
