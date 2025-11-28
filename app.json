@@ -1,11 +1,11 @@
 {
     "expo": {
-        "name": "MAPP",
-        "slug": "MAPP",
+        "name": "Toodler Kanban",
+        "slug": "toodler-kanban",
         "version": "1.0.0",
         "orientation": "portrait",
         "icon": "./assets/images/icon.png",
-        "scheme": "mapp",
+        "scheme": "toodler-kanban",
         "userInterfaceStyle": "automatic",
         "newArchEnabled": true,
         "splash": {
@@ -31,7 +31,8 @@
         },
         "plugins": ["expo-router"],
         "experiments": {
-            "typedRoutes": true
+            "typedRoutes": true,
+            "reactCompiler": true
         }
     }
 }
