@@ -12,6 +12,7 @@ type Props = {
 
 export type BottomSheetModal = RNBottomSheetModal;
 
+// eslint-disable-next-line no-redeclare
 export const BottomSheetModal = ({ children, ref, backgroundStyle, ...props }: Props) => {
     const theme = useTheme();
 

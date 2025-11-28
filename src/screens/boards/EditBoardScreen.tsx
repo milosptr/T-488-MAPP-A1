@@ -132,7 +132,10 @@ export const EditBoardScreen = () => {
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.container}
             >
-                <ScreenHeader title={`Edit Board: ${board.name}`} rightAction={() => <ModalCloseButton />} />
+                <ScreenHeader
+                    title={`Edit Board: ${board.name}`}
+                    rightAction={() => <ModalCloseButton />}
+                />
 
                 <ScrollView
                     style={styles.scrollView}

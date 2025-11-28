@@ -110,7 +110,7 @@ export const SingleBoardScreen = () => {
                     style={styles.listsScroll}
                     contentContainerStyle={styles.listsContainer}
                 >
-                    {lists.map((list, index) => {
+                    {lists.map(list => {
                         const tasks = allTasks.filter(t => t.listId === list.id);
 
                         return <BoardColumn key={list.id} list={list} tasks={tasks} />;

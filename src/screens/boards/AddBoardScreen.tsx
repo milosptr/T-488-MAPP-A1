@@ -15,12 +15,8 @@ import { SafeAreaScreen, ScreenHeader } from '@/src/components/layout';
 import { Button, ModalCloseButton, Text, TextInput, View } from '@/src/components/ui';
 import { useTheme } from '@/src/hooks/useTheme';
 import { useStore } from '@/src/store/useStore';
-import {
-    createListsFromTemplate,
-    getBoardTemplateById,
-    getBoardTemplates,
-    type BoardTemplate,
-} from '@/src/templates';
+import { createListsFromTemplate, getBoardTemplateById, getBoardTemplates } from '@/src/templates';
+import { BoardTemplate } from '@/src/types/data';
 
 interface FormErrors {
     name: string;

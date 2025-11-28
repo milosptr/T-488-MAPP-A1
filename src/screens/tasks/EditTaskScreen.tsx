@@ -99,26 +99,22 @@ export const EditTaskScreen = () => {
     }, [validateForm, updateTask, task, taskName, taskDescription, selectedListId, router]);
 
     const handleDeleteTask = useCallback(() => {
-        Alert.alert(
-            'Delete Task',
-            `Are you sure you want to delete "${task.name}"?`,
-            [
-                {
-                    text: 'Cancel',
-                    style: 'cancel',
+        Alert.alert('Delete Task', `Are you sure you want to delete "${task.name}"?`, [
+            {
+                text: 'Cancel',
+                style: 'cancel',
+            },
+            {
+                text: 'Delete',
+                style: 'destructive',
+                onPress: () => {
+                    router.back();
+                    setTimeout(() => {
+                        deleteTask(task.id);
+                    }, 100);
                 },
-                {
-                    text: 'Delete',
-                    style: 'destructive',
-                    onPress: () => {
-                        router.back();
-                        setTimeout(() => {
-                            deleteTask(task.id);
-                        }, 100);
-                    },
-                },
-            ]
-        );
+            },
+        ]);
     }, [task, deleteTask, router]);
 
     return (
@@ -222,11 +218,7 @@ export const EditTaskScreen = () => {
 
                     <View style={styles.buttonContainer}>
                         <Button title="Update Task" onPress={handleUpdateTask} />
-                        <Button
-                            title="Delete Task"
-                            onPress={handleDeleteTask}
-                            variant="danger"
-                        />
+                        <Button title="Delete Task" onPress={handleDeleteTask} variant="danger" />
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>

@@ -1,6 +1,6 @@
-import { Text, View } from '@/src/components/ui/Themed';
-import { GlassView } from '@/src/components/ui/GlassView';
 import { BoardBottomSheetModal } from '@/src/components/bottom-sheet';
+import { GlassView } from '@/src/components/ui/GlassView';
+import { Text, View } from '@/src/components/ui/Themed';
 import { useTheme } from '@/src/hooks/useTheme';
 import { useShallowStore } from '@/src/store/useStore';
 import type { Board } from '@/src/types/data';
@@ -130,11 +130,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         opacity: OPACITY_DESCRIPTION,
     },
-    tasksContainer: {
-        position: 'absolute',
-        top: 16,
-        right: 16,
-    },
     tasks: {
         fontSize: 12,
     },
@@ -155,10 +150,6 @@ const styles = StyleSheet.create({
     actionItem: {
         paddingHorizontal: 8,
         paddingVertical: 4,
-        borderRadius: 12,
-    },
-    actionIcon: {
-        padding: 4,
         borderRadius: 12,
     },
     contentInfo: {

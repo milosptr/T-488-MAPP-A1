@@ -4,5 +4,3 @@ export {
     getBoardTemplateById,
     getBoardTemplates,
 } from './template';
-
-export type { BoardTemplate, ListTemplate } from './template';

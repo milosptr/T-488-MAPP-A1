@@ -33,7 +33,7 @@ export function Text(props: TextProps) {
 }
 
 export function View(props: ViewProps) {
-    const { style, lightColor, darkColor, ...otherProps } = props;
+    const { style, ...otherProps } = props;
 
     return <DefaultView style={style} {...otherProps} />;
 }
