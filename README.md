@@ -138,7 +138,7 @@ The application implements all required features based on assignment requirement
 
 - View all tasks associated with a specific list
 - Create a new task with name, description, and completion status
-- Move tasks from one list to another (via edit task screen dropdown)
+- Move tasks from one list to another via drag-and-drop or edit task screen dropdown
 - Mark tasks as complete/incomplete with visual feedback
 - Edit existing tasks (name, description)
 - Delete tasks
@@ -147,15 +147,19 @@ The application implements all required features based on assignment requirement
 
 The following additional features have been implemented beyond the core requirements:
 
-1. **Board Templates**: Users can choose from 5 predefined board templates when creating a new board (Everyday Kanban, Project Management, Study Planner, Trip Planner, Content Planning). Each template comes with pre-configured lists and colors for quick setup.
+1. **Drag and Drop**: Custom-built drag-and-drop system for moving tasks between lists. Users can long-press a task card and drag it to any column on the board. The dragged card renders in an overlay layer above all other content, with visual feedback on both the placeholder and target drop zones. Built with React Native Gesture Handler and Reanimated for smooth 60fps interactions.
 
-2. **Persistent Data Storage**: All data is stored persistently using AsyncStorage with Zustand middleware. Data survives app restarts, providing a true mobile app experience.
+2. **Board Templates**: Users can choose from 5 predefined board templates when creating a new board (Everyday Kanban, Project Management, Study Planner, Trip Planner, Content Planning). Each template comes with pre-configured lists and colors for quick setup.
 
-3. **Reset Store Functionality**: A reset button in the Boards screen header allows users to reset all data back to the initial sample state, useful for testing and demonstration.
+3. **Persistent Data Storage**: All data is stored persistently using AsyncStorage with Zustand middleware. Data survives app restarts, providing a true mobile app experience.
 
-4. **Dark/Light Theme Support**: Full theme support with automatic system color scheme detection. All UI components adapt to the user's preferred appearance setting.
+4. **Reset Store Functionality**: A reset button in the Boards screen header allows users to reset all data back to the initial sample state, useful for testing and demonstration.
 
-5. **Edit Functionality**: Complete CRUD operations for all entities - boards, lists, and tasks can all be edited after creation, not just created and deleted.
+5. **Dark/Light Theme Support**: Full theme support with automatic system color scheme detection. All UI components adapt to the user's preferred appearance setting.
+
+6. **Edit Functionality**: Complete CRUD operations for all entities - boards, lists, and tasks can all be edited after creation, not just created and deleted.
+
+7. **Haptic Feedback**: Tactile feedback on interactions including button presses, task completion, drag-and-drop, and destructive actions using expo-haptics.
 
 ## Technologies Used
 
@@ -168,6 +172,7 @@ The following additional features have been implemented beyond the core requirem
 - AsyncStorage (@react-native-async-storage/async-storage) - Persistent local storage
 - @gorhom/bottom-sheet (v5.2.6) - Gesture-driven bottom sheet modals
 - Expo Image Picker - Board thumbnail image selection
+- Expo Haptics (~15.0.7) - Native haptic feedback
 - Expo Linear Gradient - Visual gradient effects
 - Expo Vector Icons (v15.0.3)
 - React (v19.1.0)
@@ -263,6 +268,15 @@ T-488-MAPP-A1/
 │   ├── hooks/
 │   │   ├── useColorScheme.ts
 │   │   └── useTheme.ts
+│   ├── lib/                          # Internal libraries
+│   │   └── dnd/                      # Custom drag-and-drop system
+│   │       ├── components/
+│   │       │   ├── Draggable.tsx     # Gesture-enabled draggable wrapper
+│   │       │   └── Droppable.tsx     # Drop zone with collision detection
+│   │       ├── context/
+│   │       │   └── DropContext.tsx   # Provider, overlay, and state management
+│   │       ├── types.ts              # TypeScript interfaces
+│   │       └── index.ts              # Public exports
 │   ├── screens/                      # Screen components
 │   │   ├── boards/
 │   │   │   ├── AddBoardScreen.tsx
@@ -302,6 +316,7 @@ T-488-MAPP-A1/
 
 - `/app` - Expo Router file-based routing with modal presentation and dynamic routes
 - `/src/components` - Reusable UI components organized by category (bottom-sheet, cards, layout, ui)
+- `/src/lib/dnd` - Custom drag-and-drop library with context, components, and types
 - `/src/screens` - Screen components separated from routing, organized by feature (boards, lists, tasks)
 - `/src/hooks` - Custom React hooks for theme and color scheme
 - `/src/store` - Zustand store with AsyncStorage persistence
@@ -358,6 +373,54 @@ const tasks = useStore(state => state.tasks);
 const resetStore = useStore(state => state.resetStore);
 ```
 
+## Drag and Drop Layer
+
+To avoid package conflicts with third-party libraries, we built a custom drag-and-drop system inspired by [react-native-reanimated-dnd](https://github.com/luudoanh/react-native-reanimated-dnd). The implementation lives in `src/lib/dnd` and provides a complete solution for moving tasks between lists.
+
+### Architecture
+
+The system uses a portal-based overlay approach to ensure dragged items always render above all other content, regardless of their position in the component tree:
+
+- **DropProvider**: Context wrapper that manages active drag state, droppable zone registration, collision detection, and renders a floating overlay layer for dragged content.
+- **Draggable**: Gesture-enabled wrapper using `PanGestureHandler`. When a drag starts, it measures its position and renders a clone in the provider's overlay while showing a faded placeholder in the original location.
+- **Droppable**: Drop zone wrapper that measures its layout, registers with the context, and provides visual feedback when a draggable enters/leaves. Supports configurable `collisionPadding` for easier drop targeting.
+
+### Key Features
+
+- **Overlay Rendering**: Dragged items render in an absolute-positioned overlay above all columns, solving z-index stacking issues across different list containers.
+- **Collision Detection**: Real-time hit testing against registered droppable zones with configurable padding for forgiving drop targets.
+- **Visual Feedback**: Placeholder opacity on drag start, active styling on drop zones when hovered.
+- **Smooth Animations**: Built on React Native Reanimated for 60fps gesture tracking.
+
+### Usage
+
+```tsx
+// Wrap your board content with DropProvider
+<DropProvider>
+  <ScrollView horizontal>
+    {lists.map(list => (
+      <BoardColumn key={list.id} list={list} tasks={tasks} />
+    ))}
+  </ScrollView>
+</DropProvider>
+
+// In BoardColumn, wrap the column with Droppable
+<Droppable
+  droppableId={`list-${list.id}`}
+  onDrop={data => moveTask(Number(data.id), list.id)}
+  activeStyle={{ backgroundColor: `${listColor}15` }}
+>
+  {/* Column content */}
+</Droppable>
+
+// In TaskCard, wrap with Draggable
+<Draggable data={{ id: task.id }}>
+  {/* Card content */}
+</Draggable>
+```
+
+See `src/components/cards/TaskCard.tsx` and `src/components/cards/BoardColumn.tsx` for complete implementation examples.
+
 ## Known Issues
 
 No known issues currently.
@@ -372,7 +435,7 @@ No known issues currently.
 
 ### User Experience Enhancements
 
-- Implement drag-and-drop functionality for moving tasks between lists (currently done via edit screen)
+- Refine drag-and-drop interactions (e.g., reordering tasks within a list, cross-board moves)
 - Add animations and smooth transitions between screens
 - Implement search and filter functionality for boards and tasks
 - Add task sorting options (by name, date, priority)

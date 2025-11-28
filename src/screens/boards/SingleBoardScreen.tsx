@@ -3,6 +3,7 @@ import { SafeAreaScreen } from '@/src/components/layout';
 import { Button, Text, View } from '@/src/components/ui';
 import Colors from '@/src/constants/Colors';
 import { useTheme } from '@/src/hooks/useTheme';
+import { DropProvider } from '@/src/lib/dnd';
 import { useStore } from '@/src/store/useStore';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Redirect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
@@ -104,18 +105,20 @@ export const SingleBoardScreen = () => {
                     <Text style={styles.boardTitle}>{board.name}</Text>
                     <Text style={styles.description}>{board.description}</Text>
                 </View>
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    style={styles.listsScroll}
-                    contentContainerStyle={styles.listsContainer}
-                >
-                    {lists.map(list => {
-                        const tasks = allTasks.filter(t => t.listId === list.id);
+                <DropProvider>
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        style={styles.listsScroll}
+                        contentContainerStyle={styles.listsContainer}
+                    >
+                        {lists.map(list => {
+                            const tasks = allTasks.filter(t => t.listId === list.id);
 
-                        return <BoardColumn key={list.id} list={list} tasks={tasks} />;
-                    })}
-                </ScrollView>
+                            return <BoardColumn key={list.id} list={list} tasks={tasks} />;
+                        })}
+                    </ScrollView>
+                </DropProvider>
             </View>
         </SafeAreaScreen>
     );

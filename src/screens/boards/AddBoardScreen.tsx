@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
@@ -55,9 +56,14 @@ interface TemplateCardProps {
 const TemplateCard = ({ template, isSelected, onSelect }: TemplateCardProps) => {
     const theme = useTheme();
 
+    const handleSelect = useCallback(() => {
+        Haptics.selectionAsync();
+        onSelect();
+    }, [onSelect]);
+
     return (
         <TouchableOpacity
-            onPress={onSelect}
+            onPress={handleSelect}
             style={[
                 styles.templateCard,
                 {
@@ -122,6 +128,7 @@ export const AddBoardScreen = () => {
     const [errors, setErrors] = useState<FormErrors>(INITIAL_ERRORS);
 
     const pickImage = useCallback(async () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
         if (status !== 'granted') {

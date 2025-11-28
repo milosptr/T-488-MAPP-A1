@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { PRESET_COLORS } from '@/src/constants/Colors';
 import { useTheme } from '@/src/hooks/useTheme';
+import * as Haptics from 'expo-haptics';
 import { Text } from '../Themed';
 
 interface ColorPickerProps {
@@ -14,6 +15,14 @@ interface ColorPickerProps {
 export function ColorPicker({ selectedColor, onSelectColor, label = 'Color' }: ColorPickerProps) {
     const theme = useTheme();
 
+    const handleColorSelect = useCallback(
+        (color: string) => {
+            Haptics.selectionAsync();
+            onSelectColor(color);
+        },
+        [onSelectColor]
+    );
+
     return (
         <View style={styles.container}>
             <Text style={[styles.label, { color: theme.text }]}>{label}</Text>
@@ -23,7 +32,7 @@ export function ColorPicker({ selectedColor, onSelectColor, label = 'Color' }: C
                     return (
                         <View key={color} style={styles.colorItem}>
                             <Pressable
-                                onPress={() => onSelectColor(color)}
+                                onPress={() => handleColorSelect(color)}
                                 style={[
                                     styles.colorCircle,
                                     { backgroundColor: color },

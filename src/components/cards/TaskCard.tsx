@@ -1,10 +1,12 @@
 import { Text, View } from '@/src/components/ui/Themed';
 import { borderRadius, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks/useTheme';
+import { Draggable } from '@/src/lib/dnd';
 import type { Task } from '@/src/types/data';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 
 interface TaskCardProps {
@@ -17,80 +19,117 @@ export function TaskCard({ task, listColor, onToggleComplete }: TaskCardProps) {
     const theme = useTheme();
     const isCompleted = task.isFinished;
     const router = useRouter();
+    const isDraggingRef = useRef(false);
+
+    const handlePress = () => {
+        if (!isDraggingRef.current) {
+            router.push(`/modals/edit-task?id=${task.id}`);
+        }
+    };
+
+    const handleToggle = useCallback(() => {
+        if (task.isFinished) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        } else {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        }
+        onToggleComplete();
+    }, [task.isFinished, onToggleComplete]);
 
     return (
-        <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => router.push(`/modals/edit-task?id=${task.id}`)}
-            style={[
-                styles.card,
-                {
-                    backgroundColor: theme.surface,
-                    shadowColor: theme.text,
-                },
-            ]}
+        <Draggable
+            data={{ id: task.id }}
+            style={styles.draggable}
+            onDragStart={() => {
+                isDraggingRef.current = true;
+            }}
+            onDragEnd={() => {
+                // Small delay to prevent press from firing after drag ends
+                setTimeout(() => {
+                    isDraggingRef.current = false;
+                }, 100);
+            }}
         >
-            <View
+            <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={handlePress}
                 style={[
-                    styles.accentStrip,
+                    styles.card,
                     {
-                        backgroundColor: listColor || theme.tint,
-                        opacity: isCompleted ? 0.4 : 1,
+                        backgroundColor: theme.surface,
+                        shadowColor: theme.text,
                     },
                 ]}
-            />
-
-            <View style={styles.cardContent}>
-                <Pressable
-                    onPress={onToggleComplete}
-                    style={({ pressed }) => [
-                        styles.checkbox,
+            >
+                <View
+                    style={[
+                        styles.accentStrip,
                         {
-                            backgroundColor: isCompleted ? listColor || theme.tint : 'transparent',
-                            borderColor: isCompleted ? listColor || theme.tint : theme.border,
-                            transform: [{ scale: pressed ? 0.9 : 1 }],
+                            backgroundColor: listColor || theme.tint,
+                            opacity: isCompleted ? 0.4 : 1,
                         },
                     ]}
-                >
-                    {isCompleted && <MaterialCommunityIcons name="check" size={14} color="#fff" />}
-                </Pressable>
+                />
 
-                <View style={styles.textContent}>
-                    <Text
-                        style={[
-                            styles.taskName,
+                <View style={styles.cardContent}>
+                    <Pressable
+                        onPress={handleToggle}
+                        style={({ pressed }) => [
+                            styles.checkbox,
                             {
-                                color: theme.text,
-                                textDecorationLine: isCompleted ? 'line-through' : 'none',
-                                opacity: isCompleted ? 0.5 : 1,
+                                backgroundColor: isCompleted
+                                    ? listColor || theme.tint
+                                    : 'transparent',
+                                borderColor: isCompleted ? listColor || theme.tint : theme.border,
+                                transform: [{ scale: pressed ? 0.9 : 1 }],
                             },
                         ]}
-                        numberOfLines={2}
                     >
-                        {task.name}
-                    </Text>
-                    {task.description ? (
+                        {isCompleted && (
+                            <MaterialCommunityIcons name="check" size={14} color="#fff" />
+                        )}
+                    </Pressable>
+
+                    <View style={styles.textContent}>
                         <Text
                             style={[
-                                styles.taskDescription,
+                                styles.taskName,
                                 {
-                                    color: theme.textMuted,
+                                    color: theme.text,
                                     textDecorationLine: isCompleted ? 'line-through' : 'none',
                                     opacity: isCompleted ? 0.5 : 1,
                                 },
                             ]}
                             numberOfLines={2}
                         >
-                            {task.description}
+                            {task.name}
                         </Text>
-                    ) : null}
+                        {task.description ? (
+                            <Text
+                                style={[
+                                    styles.taskDescription,
+                                    {
+                                        color: theme.textMuted,
+                                        textDecorationLine: isCompleted ? 'line-through' : 'none',
+                                        opacity: isCompleted ? 0.5 : 1,
+                                    },
+                                ]}
+                                numberOfLines={2}
+                            >
+                                {task.description}
+                            </Text>
+                        ) : null}
+                    </View>
                 </View>
-            </View>
-        </TouchableOpacity>
+            </TouchableOpacity>
+        </Draggable>
     );
 }
 
 const styles = StyleSheet.create({
+    draggable: {
+        width: '100%',
+    },
     card: {
         borderRadius: borderRadius.md,
         marginBottom: spacing.sm,

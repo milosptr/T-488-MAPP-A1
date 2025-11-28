@@ -2,10 +2,12 @@ import { EditListBottomSheetModal } from '@/src/components/bottom-sheet';
 import { Text, View } from '@/src/components/ui/Themed';
 import { borderRadius, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks/useTheme';
+import { Droppable } from '@/src/lib/dnd';
 import { useStore } from '@/src/store/useStore';
 import type { List, Task } from '@/src/types/data';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { Pressable, ScrollView, StyleSheet } from 'react-native';
@@ -18,6 +20,7 @@ interface BoardColumnProps {
 
 export function BoardColumn({ list, tasks }: BoardColumnProps) {
     const theme = useTheme();
+    const moveTask = useStore(state => state.moveTask);
     const router = useRouter();
     const updateTask = useStore(state => state.updateTask);
     const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -33,21 +36,32 @@ export function BoardColumn({ list, tasks }: BoardColumnProps) {
     const totalCount = tasks.length;
     const progressPercent = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
+    const listColor = list.color || theme.tint;
+
     const handleToggleComplete = (task: Task) => {
         updateTask({ ...task, isFinished: !task.isFinished });
     };
 
     const handleOpenMenu = useCallback(() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         bottomSheetRef.current?.present();
     }, []);
 
     const handleAddTask = useCallback(() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         router.push(`/modals/add-task?listId=${list.id}`);
     }, [router, list.id]);
 
     return (
         <>
-            <View
+            <Droppable
+                droppableId={`list-${list.id}`}
+                onDrop={data => {
+                    const taskId = Number(data.id);
+                    if (!Number.isNaN(taskId)) {
+                        moveTask(taskId, list.id);
+                    }
+                }}
                 style={[
                     styles.column,
                     {
@@ -55,22 +69,19 @@ export function BoardColumn({ list, tasks }: BoardColumnProps) {
                         borderColor: theme.border,
                     },
                 ]}
+                activeStyle={{
+                    backgroundColor: `${listColor}15`,
+                    borderColor: listColor,
+                }}
             >
                 <View style={styles.header}>
-                    <View
-                        style={[styles.colorDot, { backgroundColor: list.color || theme.tint }]}
-                    />
+                    <View style={[styles.colorDot, { backgroundColor: listColor }]} />
                     <Text style={[styles.headerTitle, { color: theme.text }]} numberOfLines={1}>
                         {list.name}
                     </Text>
                     <View style={styles.headerRight}>
-                        <View
-                            style={[
-                                styles.countBadge,
-                                { backgroundColor: `${list.color || theme.tint}20` },
-                            ]}
-                        >
-                            <Text style={[styles.countText, { color: list.color || theme.tint }]}>
+                        <View style={[styles.countBadge, { backgroundColor: `${listColor}20` }]}>
+                            <Text style={[styles.countText, { color: listColor }]}>
                                 {totalCount}
                             </Text>
                         </View>
@@ -97,7 +108,7 @@ export function BoardColumn({ list, tasks }: BoardColumnProps) {
                                 style={[
                                     styles.progressFill,
                                     {
-                                        backgroundColor: list.color || theme.tint,
+                                        backgroundColor: listColor,
                                         width: `${progressPercent}%`,
                                     },
                                 ]}
@@ -124,7 +135,8 @@ export function BoardColumn({ list, tasks }: BoardColumnProps) {
                 </Pressable>
 
                 <ScrollView
-                    style={styles.tasksList}
+                    style={[styles.tasksList, styles.visibleOverflow]}
+                    contentContainerStyle={[styles.tasksListContent, styles.visibleOverflow]}
                     showsVerticalScrollIndicator={false}
                     nestedScrollEnabled
                 >
@@ -132,7 +144,7 @@ export function BoardColumn({ list, tasks }: BoardColumnProps) {
                         <TaskCard
                             key={task.id}
                             task={task}
-                            listColor={list.color}
+                            listColor={listColor}
                             onToggleComplete={() => handleToggleComplete(task)}
                         />
                     ))}
@@ -150,7 +162,7 @@ export function BoardColumn({ list, tasks }: BoardColumnProps) {
                         </View>
                     )}
                 </ScrollView>
-            </View>
+            </Droppable>
 
             <EditListBottomSheetModal ref={bottomSheetRef} listId={list.id} />
         </>
@@ -165,6 +177,7 @@ const styles = StyleSheet.create({
         padding: spacing.md,
         marginRight: spacing.md,
         maxHeight: '100%',
+        overflow: 'visible',
     },
     header: {
         flexDirection: 'row',
@@ -236,6 +249,12 @@ const styles = StyleSheet.create({
     },
     tasksList: {
         flex: 1,
+    },
+    tasksListContent: {
+        paddingBottom: spacing.lg,
+    },
+    visibleOverflow: {
+        overflow: 'visible',
     },
     emptyState: {
         alignItems: 'center',

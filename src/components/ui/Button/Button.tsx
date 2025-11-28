@@ -1,6 +1,7 @@
 import { borderRadius } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks/useTheme';
-import { ReactNode } from 'react';
+import * as Haptics from 'expo-haptics';
+import { ReactNode, useCallback } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, View } from '../Themed';
 
@@ -42,6 +43,15 @@ export const Button = ({
     const theme = useTheme();
     const sizeStyles = sizes[size];
 
+    const handlePress = useCallback(() => {
+        if (variant === 'danger') {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+        } else {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }
+        onPress?.();
+    }, [variant, onPress]);
+
     const getVariantStyles = () => {
         switch (variant) {
             case 'outlined':
@@ -78,7 +88,7 @@ export const Button = ({
     };
 
     return (
-        <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
+        <TouchableOpacity activeOpacity={0.8} onPress={handlePress}>
             <View style={[styles.container, getVariantStyles(), sizeStyles]}>
                 {leadingIcon}
                 {!!title && (

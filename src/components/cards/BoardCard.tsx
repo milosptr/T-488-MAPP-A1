@@ -6,9 +6,10 @@ import { useShallowStore } from '@/src/store/useStore';
 import type { Board } from '@/src/types/data';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Image, Platform, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 
 const PRESSED_OPACITY = 0.8;
@@ -44,9 +45,10 @@ export function BoardCard({ board }: BoardCardProps) {
         router.push(`/boards/${board.id}`);
     };
 
-    const handleMorePress = () => {
+    const handleMorePress = useCallback(() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         boardBottomSheetModalRef.current?.present();
-    };
+    }, []);
 
     return (
         <>
