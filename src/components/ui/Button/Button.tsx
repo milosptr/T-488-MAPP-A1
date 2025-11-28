@@ -7,7 +7,7 @@ import { Text, View } from '../Themed';
 type Props = {
     size?: 'small' | 'medium' | 'large';
     variant?: 'default' | 'outlined' | 'danger' | 'success';
-    title: string;
+    title?: string;
     leadingIcon?: ReactNode;
     trailingIcon?: ReactNode;
     onPress?: () => void;
@@ -81,11 +81,16 @@ export const Button = ({
         <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
             <View style={[styles.container, getVariantStyles(), sizeStyles]}>
                 {leadingIcon}
-                <Text
-                    style={[styles.title, { color: getTextColor(), fontSize: sizeStyles.fontSize }]}
-                >
-                    {title}
-                </Text>
+                {!!title && (
+                    <Text
+                        style={[
+                            styles.title,
+                            { color: getTextColor(), fontSize: sizeStyles.fontSize },
+                        ]}
+                    >
+                        {title}
+                    </Text>
+                )}
                 {trailingIcon}
             </View>
         </TouchableOpacity>

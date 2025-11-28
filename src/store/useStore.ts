@@ -1,4 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { useShallow } from 'zustand/react/shallow';
 import { data } from '../../data/data';
 import type { Board, List, Task } from '../types/data';
@@ -7,7 +9,7 @@ interface StoreState {
     boards: Board[];
     lists: List[];
     tasks: Task[];
-    initializeStore: () => void;
+    _hasHydrated: boolean;
     resetStore: () => void;
 
     addBoard: (board: Board) => void;
@@ -26,83 +28,94 @@ interface StoreState {
     updateList: (updatedList: List) => void;
 }
 
-const useStoreBase = create<StoreState>((set, get) => ({
-    boards: [],
-    lists: [],
-    tasks: [],
-
-    initializeStore: () => {
-        set({
+const useStoreBase = create<StoreState>()(
+    persist(
+        (set, get) => ({
             boards: data.boards,
             lists: data.lists,
             tasks: data.tasks,
-        });
-    },
+            _hasHydrated: false,
 
-    resetStore: () => {
-        set({
-            boards: data.boards,
-            lists: data.lists,
-            tasks: data.tasks,
-        });
-    },
+            resetStore: () => {
+                set({
+                    boards: data.boards,
+                    lists: data.lists,
+                    tasks: data.tasks,
+                });
+            },
 
-    addBoard: (board: Board) => {
-        set({ boards: [...get().boards, board] });
-    },
+            addBoard: (board: Board) => {
+                set({ boards: [...get().boards, board] });
+            },
 
-    updateBoard: (updatedBoard: Board) => {
-        set({
-            boards: get().boards.map(board =>
-                board.id === updatedBoard.id ? updatedBoard : board
-            ),
-        });
-    },
+            updateBoard: (updatedBoard: Board) => {
+                set({
+                    boards: get().boards.map(board =>
+                        board.id === updatedBoard.id ? updatedBoard : board
+                    ),
+                });
+            },
 
-    deleteBoard: (id: number) => {
-        set({ boards: get().boards.filter(board => board.id !== id) });
-    },
+            deleteBoard: (id: number) => {
+                set({ boards: get().boards.filter(board => board.id !== id) });
+            },
 
-    addList: (list: List) => {
-        set({ lists: [...get().lists, list] });
-    },
+            addList: (list: List) => {
+                set({ lists: [...get().lists, list] });
+            },
 
-    deleteList: (id: number) => {
-        set({ lists: get().lists.filter(list => list.id !== id) });
-    },
+            deleteList: (id: number) => {
+                set({ lists: get().lists.filter(list => list.id !== id) });
+            },
 
-    updateList: (updatedList: List) => {
-        set({
-            lists: get().lists.map(list => (list.id === updatedList.id ? updatedList : list)),
-        });
-    },
-    updateTask: (updatedTask: Task) => {
-        set({
-            tasks: get().tasks.map(t => (t.id === updatedTask.id ? updatedTask : t)),
-        });
-    },
-    deleteTask: (id: number) => {
-        set({ tasks: get().tasks.filter(task => task.id !== id) });
-    },
-    moveTask: (taskId: number, toListId: number) => {
-        set({
-            tasks: get().tasks.map(t => (t.id === taskId ? { ...t, listId: toListId } : t)),
-        });
-    },
-    addTask: (listId: number, task) => {
-        const tasks = get().tasks;
-        const nextId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
-        const newTask: Task = {
-            id: nextId,
-            name: task.name,
-            description: task.description || '',
-            isFinished: !!task.isFinished,
-            listId,
-        };
-        set({ tasks: [...get().tasks, newTask] });
-        return nextId;
-    },
-}));
+            updateList: (updatedList: List) => {
+                set({
+                    lists: get().lists.map(list =>
+                        list.id === updatedList.id ? updatedList : list
+                    ),
+                });
+            },
+            updateTask: (updatedTask: Task) => {
+                set({
+                    tasks: get().tasks.map(t => (t.id === updatedTask.id ? updatedTask : t)),
+                });
+            },
+            deleteTask: (id: number) => {
+                set({ tasks: get().tasks.filter(task => task.id !== id) });
+            },
+            moveTask: (taskId: number, toListId: number) => {
+                set({
+                    tasks: get().tasks.map(t => (t.id === taskId ? { ...t, listId: toListId } : t)),
+                });
+            },
+            addTask: (listId: number, task) => {
+                const tasks = get().tasks;
+                const nextId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
+                const newTask: Task = {
+                    id: nextId,
+                    name: task.name,
+                    description: task.description || '',
+                    isFinished: !!task.isFinished,
+                    listId,
+                };
+                set({ tasks: [...get().tasks, newTask] });
+                return nextId;
+            },
+        }),
+        {
+            name: 'mapp-store',
+            storage: createJSONStorage(() => AsyncStorage),
+            partialize: state => ({
+                boards: state.boards,
+                lists: state.lists,
+                tasks: state.tasks,
+            }),
+            onRehydrateStorage: () => () => {
+                useStoreBase.setState({ _hasHydrated: true });
+            },
+        }
+    )
+);
 
 export const useStore = useStoreBase;
 

@@ -1,9 +1,8 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
 
-import { Button } from '@/src/components/ui';
 import { BoardCard } from '@/src/components/cards';
 import { SafeAreaScreen, ScreenHeader } from '@/src/components/layout';
-import { View } from '@/src/components/ui';
+import { Button, View } from '@/src/components/ui';
 import { useTheme } from '@/src/hooks/useTheme';
 import { useStore } from '@/src/store/useStore';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -12,10 +11,24 @@ import { useRouter } from 'expo-router';
 export const BoardsScreen = () => {
     const theme = useTheme();
     const boards = useStore(state => state.boards);
+    const resetStore = useStore(state => state.resetStore);
     const router = useRouter();
 
     const handleAddBoard = () => {
         router.push('/modals/add-board');
+    };
+
+    const handleRefreshStore = () => {
+        Alert.alert('Reset Store', 'Are you sure you want to reset the store to initial state?', [
+            { text: 'Cancel', style: 'cancel' },
+            {
+                text: 'Reset',
+                style: 'destructive',
+                onPress: () => {
+                    resetStore();
+                },
+            },
+        ]);
     };
 
     return (
@@ -24,18 +37,32 @@ export const BoardsScreen = () => {
                 <ScreenHeader
                     title="Boards"
                     rightAction={() => (
-                        <Button
-                            size="small"
-                            title="Add Board"
-                            leadingIcon={
-                                <MaterialCommunityIcons
-                                    name="plus"
-                                    size={16}
-                                    color={theme.onButton}
-                                />
-                            }
-                            onPress={handleAddBoard}
-                        />
+                        <View style={styles.buttonsContainer}>
+                            <Button
+                                size="small"
+                                title="Add Board"
+                                leadingIcon={
+                                    <MaterialCommunityIcons
+                                        name="plus"
+                                        size={16}
+                                        color={theme.onButton}
+                                    />
+                                }
+                                onPress={handleAddBoard}
+                            />
+                            <Button
+                                size="small"
+                                variant="outlined"
+                                leadingIcon={
+                                    <MaterialCommunityIcons
+                                        name="refresh"
+                                        size={16}
+                                        color={theme.button}
+                                    />
+                                }
+                                onPress={handleRefreshStore}
+                            />
+                        </View>
                     )}
                 />
                 <ScrollView showsVerticalScrollIndicator={false}>
@@ -57,5 +84,10 @@ const styles = StyleSheet.create({
     },
     boardsContainer: {
         gap: 16,
+    },
+    buttonsContainer: {
+        gap: 12,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
     },
 });
