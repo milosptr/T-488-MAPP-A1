@@ -58,7 +58,7 @@ export const Button = ({
                 return {
                     backgroundColor: 'transparent',
                     borderWidth: 1,
-                    borderColor: theme.button,
+                    borderColor: theme.primary,
                 };
             case 'danger':
                 return {
@@ -70,7 +70,7 @@ export const Button = ({
                 };
             default:
                 return {
-                    backgroundColor: theme.button,
+                    backgroundColor: theme.primary,
                 };
         }
     };
@@ -78,12 +78,13 @@ export const Button = ({
     const getTextColor = () => {
         switch (variant) {
             case 'outlined':
-                return theme.button;
+                return theme.primary;
             case 'danger':
+                return theme.onError;
             case 'success':
-                return '#fff';
+                return theme.onSuccess;
             default:
-                return theme.onButton;
+                return theme.onPrimary;
         }
     };
 

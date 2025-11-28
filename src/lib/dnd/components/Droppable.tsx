@@ -72,8 +72,6 @@ export const Droppable = ({
         handleMeasure();
     }, [handleMeasure]);
 
-    // Re-measure when measurement epoch changes (triggered when drag starts)
-    // This ensures we have fresh screen coordinates even if the element has moved due to scrolling
     useEffect(() => {
         if (measurementEpoch > 0) {
             handleMeasure();

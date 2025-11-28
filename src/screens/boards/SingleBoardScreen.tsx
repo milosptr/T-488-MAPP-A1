@@ -1,14 +1,14 @@
 import { BoardColumn } from '@/src/components/cards';
 import { SafeAreaScreen } from '@/src/components/layout';
-import { Button, Text, View } from '@/src/components/ui';
-import Colors from '@/src/constants/Colors';
+import { Button, Text, TextInput, View } from '@/src/components/ui';
+import { borderRadius, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks/useTheme';
 import { DropProvider } from '@/src/lib/dnd';
 import { useStore } from '@/src/store/useStore';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Redirect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
-import React, { useEffect, useMemo } from 'react';
-import { Platform, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Platform, Pressable, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
 export const SingleBoardScreen = () => {
     const { id } = useLocalSearchParams();
@@ -16,11 +16,22 @@ export const SingleBoardScreen = () => {
     const board = useStore(state => state.boards.find(board => board.id === Number(id)));
     const allLists = useStore(state => state.lists);
     const allTasks = useStore(state => state.tasks);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const lists = useMemo(
         () => allLists.filter(list => list.boardId === Number(id)),
         [allLists, id]
     );
+
+    const filteredTasks = useMemo(() => {
+        if (!searchQuery.trim()) return allTasks;
+        const query = searchQuery.toLowerCase();
+        return allTasks.filter(
+            task =>
+                task.name.toLowerCase().includes(query) ||
+                task.description.toLowerCase().includes(query)
+        );
+    }, [allTasks, searchQuery]);
 
     const theme = useTheme();
     const router = useRouter();
@@ -37,10 +48,12 @@ export const SingleBoardScreen = () => {
                         <Feather
                             name="chevron-left"
                             size={16}
-                            color={theme.white}
+                            color={theme.onPrimary}
                             strokeWidth={2}
                         />
-                        <Text style={styles.headerActionButtonText}>Back</Text>
+                        <Text style={[styles.headerActionButtonText, { color: theme.onPrimary }]}>
+                            Back
+                        </Text>
                     </TouchableOpacity>
                 ),
                 headerRight: () => (
@@ -51,10 +64,12 @@ export const SingleBoardScreen = () => {
                         <MaterialCommunityIcons
                             name="plus"
                             size={16}
-                            color={theme.white}
+                            color={theme.onPrimary}
                             strokeWidth={2}
                         />
-                        <Text style={styles.headerActionButtonText}>Add New List</Text>
+                        <Text style={[styles.headerActionButtonText, { color: theme.onPrimary }]}>
+                            Add New List
+                        </Text>
                     </TouchableOpacity>
                 ),
             });
@@ -81,7 +96,7 @@ export const SingleBoardScreen = () => {
                                 <Feather
                                     name="chevron-left"
                                     size={16}
-                                    color={theme.white}
+                                    color={theme.onPrimary}
                                     strokeWidth={2}
                                 />
                             }
@@ -94,7 +109,7 @@ export const SingleBoardScreen = () => {
                                 <MaterialCommunityIcons
                                     name="plus"
                                     size={16}
-                                    color={theme.white}
+                                    color={theme.onPrimary}
                                     strokeWidth={2}
                                 />
                             }
@@ -105,6 +120,40 @@ export const SingleBoardScreen = () => {
                     <Text style={styles.boardTitle}>{board.name}</Text>
                     <Text style={styles.description}>{board.description}</Text>
                 </View>
+                <View
+                    style={[
+                        styles.searchContainer,
+                        { backgroundColor: theme.surface, borderColor: theme.outline },
+                    ]}
+                >
+                    <Feather
+                        name="search"
+                        size={18}
+                        color={theme.onSurfaceVariant}
+                        style={styles.searchIcon}
+                    />
+                    <TextInput
+                        placeholder="Search tasks..."
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                        containerStyle={styles.searchInput}
+                        style={[
+                            styles.searchInputField,
+                            searchQuery.length > 0 && styles.searchInputFieldWithClear,
+                        ]}
+                    />
+                    {searchQuery.length > 0 && (
+                        <Pressable
+                            onPress={() => setSearchQuery('')}
+                            style={({ pressed }) => [
+                                styles.clearButton,
+                                { opacity: pressed ? 0.6 : 1 },
+                            ]}
+                        >
+                            <Feather name="x" size={18} color={theme.onSurfaceVariant} />
+                        </Pressable>
+                    )}
+                </View>
                 <DropProvider>
                     <ScrollView
                         horizontal
@@ -113,7 +162,7 @@ export const SingleBoardScreen = () => {
                         contentContainerStyle={styles.listsContainer}
                     >
                         {lists.map(list => {
-                            const tasks = allTasks.filter(t => t.listId === list.id);
+                            const tasks = filteredTasks.filter(t => t.listId === list.id);
 
                             return <BoardColumn key={list.id} list={list} tasks={tasks} />;
                         })}
@@ -143,7 +192,6 @@ const styles = StyleSheet.create({
     headerActionButtonText: {
         fontSize: 14,
         fontWeight: '600',
-        color: Colors.light.white,
     },
     boardTitle: {
         fontSize: 24,
@@ -151,6 +199,34 @@ const styles = StyleSheet.create({
     },
     description: {
         fontSize: 16,
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.sm,
+        borderRadius: borderRadius.lg,
+        gap: spacing.sm,
+        borderWidth: 1,
+    },
+    searchIcon: {
+        marginLeft: spacing.xs,
+    },
+    searchInput: {
+        flex: 1,
+        marginBottom: 0,
+    },
+    searchInputField: {
+        borderWidth: 0,
+        paddingHorizontal: 0,
+        paddingVertical: spacing.xs,
+    },
+    searchInputFieldWithClear: {
+        paddingRight: spacing.md,
+    },
+    clearButton: {
+        padding: spacing.xs,
+        marginRight: spacing.xs,
     },
     listsScroll: {
         flex: 1,

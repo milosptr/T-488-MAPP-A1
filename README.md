@@ -161,6 +161,8 @@ The following additional features have been implemented beyond the core requirem
 
 7. **Haptic Feedback**: Tactile feedback on interactions including button presses, task completion, drag-and-drop, and destructive actions using expo-haptics.
 
+8. **Task Search**: Real-time search functionality on the board detail view. Users can search for tasks by name or description across all lists within a board. The search input includes a clear button for quick reset and filters tasks instantly as you type, making it easy to find specific tasks in large boards.
+
 ## Technologies Used
 
 - React Native (v0.81.5)
@@ -437,7 +439,7 @@ No known issues currently.
 
 - Refine drag-and-drop interactions (e.g., reordering tasks within a list, cross-board moves)
 - Add animations and smooth transitions between screens
-- Implement search and filter functionality for boards and tasks
+- Add board-level search functionality and advanced task filters (by status, date, priority)
 - Add task sorting options (by name, date, priority)
 
 ### Additional Features

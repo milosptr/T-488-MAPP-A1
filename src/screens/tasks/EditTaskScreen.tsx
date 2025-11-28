@@ -157,25 +157,25 @@ export const EditTaskScreen = () => {
                         <TouchableOpacity
                             style={[
                                 styles.listDropdown,
-                                { borderColor: theme.border, backgroundColor: theme.surface },
+                                { borderColor: theme.outline, backgroundColor: theme.surface },
                             ]}
                             onPress={() => setShowListPicker(!showListPicker)}
                         >
-                            <Text style={[styles.listDropdownText, { color: theme.text }]}>
+                            <Text style={[styles.listDropdownText, { color: theme.onSurface }]}>
                                 {boardLists.find(l => l.id === selectedListId)?.name ||
                                     'Select List'}
                             </Text>
                             <MaterialCommunityIcons
                                 name={showListPicker ? 'chevron-up' : 'chevron-down'}
                                 size={20}
-                                color={theme.text}
+                                color={theme.onSurface}
                             />
                         </TouchableOpacity>
                         {showListPicker && (
                             <View
                                 style={[
                                     styles.listPicker,
-                                    { borderColor: theme.border, backgroundColor: theme.surface },
+                                    { borderColor: theme.outline, backgroundColor: theme.surface },
                                 ]}
                             >
                                 {boardLists.map(list => (
@@ -184,7 +184,7 @@ export const EditTaskScreen = () => {
                                         style={[
                                             styles.listOption,
                                             selectedListId === list.id && {
-                                                backgroundColor: theme.tint + '20',
+                                                backgroundColor: theme.primary + '20',
                                             },
                                         ]}
                                         onPress={() => {
@@ -199,7 +199,7 @@ export const EditTaskScreen = () => {
                                             ]}
                                         />
                                         <Text
-                                            style={[styles.listOptionText, { color: theme.text }]}
+                                            style={[styles.listOptionText, { color: theme.onSurface }]}
                                         >
                                             {list.name}
                                         </Text>
@@ -207,7 +207,7 @@ export const EditTaskScreen = () => {
                                             <MaterialCommunityIcons
                                                 name="check"
                                                 size={20}
-                                                color={theme.tint}
+                                                color={theme.primary}
                                             />
                                         )}
                                     </TouchableOpacity>

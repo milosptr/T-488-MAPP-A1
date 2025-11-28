@@ -30,12 +30,12 @@ export const TextInput = React.forwardRef<RNTextInput, TextInputProps>(
                         styles.input,
                         {
                             backgroundColor: theme.surface,
-                            borderColor: error ? theme.error : theme.border,
-                            color: theme.text,
+                            borderColor: error ? theme.error : theme.outline,
+                            color: theme.onSurface,
                         },
                         style,
                     ]}
-                    placeholderTextColor={theme.textMuted}
+                    placeholderTextColor={theme.onSurfaceVariant}
                     {...textInputProps}
                 />
                 {error && <Text style={[styles.error, { color: theme.error }]}>{error}</Text>}

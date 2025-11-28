@@ -25,7 +25,7 @@ export const ModalCloseButton = () => {
             style={styles.button}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-            <MaterialCommunityIcons name="close" size={24} color={theme.text} />
+            <MaterialCommunityIcons name="close" size={24} color={theme.onSurface} />
         </TouchableOpacity>
     );
 };

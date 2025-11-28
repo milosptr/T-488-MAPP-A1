@@ -171,7 +171,7 @@ export const EditBoardScreen = () => {
                             <View style={styles.imagePreviewContainer}>
                                 <Image
                                     source={{ uri: boardThumbnailPhoto }}
-                                    style={[styles.imagePreview, { borderColor: theme.border }]}
+                                    style={[styles.imagePreview, { borderColor: theme.outline }]}
                                     resizeMode="cover"
                                 />
                                 <TouchableOpacity
@@ -191,14 +191,14 @@ export const EditBoardScreen = () => {
                                     styles.imagePlaceholder,
                                     {
                                         backgroundColor: theme.surface,
-                                        borderColor: errors.thumbnail ? theme.error : theme.border,
+                                        borderColor: errors.thumbnail ? theme.error : theme.outline,
                                     },
                                 ]}
                             >
                                 <Text
                                     style={[
                                         styles.imagePlaceholderText,
-                                        { color: theme.textMuted },
+                                        { color: theme.onSurfaceVariant },
                                     ]}
                                 >
                                     Tap to select an image

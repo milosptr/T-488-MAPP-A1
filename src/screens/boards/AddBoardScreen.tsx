@@ -68,7 +68,7 @@ const TemplateCard = ({ template, isSelected, onSelect }: TemplateCardProps) => 
                 styles.templateCard,
                 {
                     backgroundColor: theme.surface,
-                    borderColor: isSelected ? theme.tint : theme.border,
+                    borderColor: isSelected ? theme.primary : theme.outline,
                     borderWidth: 1,
                 },
             ]}
@@ -76,12 +76,15 @@ const TemplateCard = ({ template, isSelected, onSelect }: TemplateCardProps) => 
         >
             {template ? (
                 <>
-                    <Text style={[styles.templateName, { color: theme.text }]} numberOfLines={1}>
+                    <Text
+                        style={[styles.templateName, { color: theme.onSurface }]}
+                        numberOfLines={1}
+                    >
                         {template.name}
                     </Text>
                     {template.description && (
                         <Text
-                            style={[styles.templateDescription, { color: theme.textMuted }]}
+                            style={[styles.templateDescription, { color: theme.onSurfaceVariant }]}
                             numberOfLines={2}
                         >
                             {template.description}
@@ -95,7 +98,7 @@ const TemplateCard = ({ template, isSelected, onSelect }: TemplateCardProps) => 
                             />
                         ))}
                         {template.lists.length > 4 && (
-                            <Text style={[styles.moreListsText, { color: theme.textMuted }]}>
+                            <Text style={[styles.moreListsText, { color: theme.onSurfaceVariant }]}>
                                 +{template.lists.length - 4}
                             </Text>
                         )}
@@ -103,8 +106,8 @@ const TemplateCard = ({ template, isSelected, onSelect }: TemplateCardProps) => 
                 </>
             ) : (
                 <>
-                    <Text style={[styles.templateName, { color: theme.text }]}>None</Text>
-                    <Text style={[styles.templateDescription, { color: theme.textMuted }]}>
+                    <Text style={[styles.templateName, { color: theme.onSurface }]}>None</Text>
+                    <Text style={[styles.templateDescription, { color: theme.onSurfaceVariant }]}>
                         Start from scratch
                     </Text>
                 </>
@@ -190,10 +193,8 @@ export const AddBoardScreen = () => {
             return;
         }
 
-        // Generate new board ID
         const newBoardId = boards.length > 0 ? Math.max(...boards.map(b => b.id)) + 1 : 1;
 
-        // Create the board
         addBoard({
             id: newBoardId,
             name: boardName.trim(),
@@ -201,22 +202,17 @@ export const AddBoardScreen = () => {
             thumbnailPhoto: boardThumbnailPhoto,
         });
 
-        // If a template is selected, create lists from the template
         if (selectedTemplateId) {
             const template = getBoardTemplateById(selectedTemplateId);
             if (template) {
-                // Calculate the starting list ID
                 const startListId = lists.length > 0 ? Math.max(...lists.map(l => l.id)) + 1 : 1;
 
-                // Create lists from template
                 const newLists = createListsFromTemplate(newBoardId, template, startListId);
 
-                // Add each list to the store
                 newLists.forEach(list => addList(list));
             }
         }
 
-        // Navigate to the new board
         router.replace(`/boards/${newBoardId}`);
     }, [
         validateForm,
@@ -273,7 +269,7 @@ export const AddBoardScreen = () => {
                             <View style={styles.imagePreviewContainer}>
                                 <Image
                                     source={{ uri: boardThumbnailPhoto }}
-                                    style={[styles.imagePreview, { borderColor: theme.border }]}
+                                    style={[styles.imagePreview, { borderColor: theme.outline }]}
                                     resizeMode="cover"
                                 />
                                 <TouchableOpacity
@@ -293,14 +289,14 @@ export const AddBoardScreen = () => {
                                     styles.imagePlaceholder,
                                     {
                                         backgroundColor: theme.surface,
-                                        borderColor: errors.thumbnail ? theme.error : theme.border,
+                                        borderColor: errors.thumbnail ? theme.error : theme.outline,
                                     },
                                 ]}
                             >
                                 <Text
                                     style={[
                                         styles.imagePlaceholderText,
-                                        { color: theme.textMuted },
+                                        { color: theme.onSurfaceVariant },
                                     ]}
                                 >
                                     Tap to select an image
@@ -317,7 +313,7 @@ export const AddBoardScreen = () => {
 
                     <View style={styles.templateSection}>
                         <Text style={styles.label}>Template</Text>
-                        <Text style={[styles.templateHint, { color: theme.textMuted }]}>
+                        <Text style={[styles.templateHint, { color: theme.onSurfaceVariant }]}>
                             Choose a template to start with predefined lists
                         </Text>
                         <ScrollView

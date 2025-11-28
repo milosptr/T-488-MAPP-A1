@@ -24,7 +24,7 @@ export const BottomSheetModal = ({ children, ref, backgroundStyle, ...props }: P
     ];
 
     const handleIndicatorStyle = {
-        backgroundColor: theme.border,
+        backgroundColor: theme.outline,
     };
 
     return (

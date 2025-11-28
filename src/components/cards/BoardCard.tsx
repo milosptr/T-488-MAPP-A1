@@ -37,8 +37,8 @@ export function BoardCard({ board }: BoardCardProps) {
     const boardBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
     const themedTextStyle = Platform.select({
-        android: { color: theme.text },
-        default: { color: '#fff' },
+        android: { color: theme.onSurface },
+        default: { color: theme.onPrimary },
     });
 
     const handlePress = () => {
@@ -57,7 +57,7 @@ export function BoardCard({ board }: BoardCardProps) {
                     <View
                         style={[
                             styles.card,
-                            { borderColor: theme.border, opacity: pressed ? PRESSED_OPACITY : 1 },
+                            { borderColor: theme.outline, opacity: pressed ? PRESSED_OPACITY : 1 },
                         ]}
                     >
                         <View>
@@ -94,7 +94,7 @@ export function BoardCard({ board }: BoardCardProps) {
                                 <MaterialCommunityIcons
                                     name="dots-vertical"
                                     size={ICON_SIZE}
-                                    color={theme.text}
+                                    color={theme.onSurface}
                                 />
                             </TouchableOpacity>
                         </View>

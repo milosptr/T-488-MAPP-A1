@@ -7,7 +7,7 @@ export const HeaderBackground = () => {
         <View
             pointerEvents="none"
             style={{
-                backgroundColor: theme.headerBackground,
+                backgroundColor: theme.primary,
                 flex: 1,
             }}
         />

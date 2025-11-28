@@ -61,8 +61,6 @@ export const Draggable = ({
     }, []);
 
     const showOverlay = useCallback(() => {
-        // measureInWindow returns screen coordinates, but overlay is positioned
-        // relative to the DropProvider container, so subtract the provider's screen offset
         const relativeX = originRef.current.x - providerOffset.x;
         const relativeY = originRef.current.y - providerOffset.y;
 

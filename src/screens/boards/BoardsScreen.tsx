@@ -45,7 +45,7 @@ export const BoardsScreen = () => {
                                     <MaterialCommunityIcons
                                         name="plus"
                                         size={16}
-                                        color={theme.onButton}
+                                        color={theme.onPrimary}
                                     />
                                 }
                                 onPress={handleAddBoard}
@@ -57,7 +57,7 @@ export const BoardsScreen = () => {
                                     <MaterialCommunityIcons
                                         name="refresh"
                                         size={16}
-                                        color={theme.button}
+                                        color={theme.primary}
                                     />
                                 }
                                 onPress={handleRefreshStore}

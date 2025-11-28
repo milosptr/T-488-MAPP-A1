@@ -169,8 +169,6 @@ export const DropProvider = ({ children }: DropProviderProps) => {
     const startDrag = useCallback((data: DragData) => {
         activeDragRef.current = data;
         setActiveDrag(data);
-        // Increment epoch to trigger all droppables to re-measure their positions
-        // This is needed because scroll containers may have moved droppables since last measurement
         setMeasurementEpoch(prev => prev + 1);
     }, []);
 

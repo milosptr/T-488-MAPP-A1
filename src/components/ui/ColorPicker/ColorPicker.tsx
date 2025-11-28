@@ -25,7 +25,7 @@ export function ColorPicker({ selectedColor, onSelectColor, label = 'Color' }: C
 
     return (
         <View style={styles.container}>
-            <Text style={[styles.label, { color: theme.text }]}>{label}</Text>
+            <Text style={[styles.label, { color: theme.onSurface }]}>{label}</Text>
             <View style={styles.grid}>
                 {PRESET_COLORS.map(color => {
                     const isSelected = selectedColor.toUpperCase() === color.toUpperCase();
@@ -36,12 +36,19 @@ export function ColorPicker({ selectedColor, onSelectColor, label = 'Color' }: C
                                 style={[
                                     styles.colorCircle,
                                     { backgroundColor: color },
-                                    isSelected && { borderColor: theme.text },
+                                    isSelected && { borderColor: theme.onSurface },
                                 ]}
                             >
                                 {isSelected && (
                                     <View style={styles.checkmark}>
-                                        <Text style={styles.checkmarkText}>✓</Text>
+                                        <Text
+                                            style={[
+                                                styles.checkmarkText,
+                                                { color: theme.onSurface },
+                                            ]}
+                                        >
+                                            ✓
+                                        </Text>
                                     </View>
                                 )}
                             </Pressable>
@@ -89,6 +96,5 @@ const styles = StyleSheet.create({
     checkmarkText: {
         fontSize: 14,
         fontWeight: 'bold',
-        color: '#333',
     },
 });

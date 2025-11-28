@@ -36,7 +36,7 @@ export function BoardColumn({ list, tasks }: BoardColumnProps) {
     const totalCount = tasks.length;
     const progressPercent = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
-    const listColor = list.color || theme.tint;
+    const listColor = list.color || theme.primary;
 
     const handleToggleComplete = (task: Task) => {
         updateTask({ ...task, isFinished: !task.isFinished });
@@ -66,7 +66,7 @@ export function BoardColumn({ list, tasks }: BoardColumnProps) {
                     styles.column,
                     {
                         backgroundColor: `${theme.surface}f8`,
-                        borderColor: theme.border,
+                        borderColor: theme.outline,
                     },
                 ]}
                 activeStyle={{
@@ -76,7 +76,10 @@ export function BoardColumn({ list, tasks }: BoardColumnProps) {
             >
                 <View style={styles.header}>
                     <View style={[styles.colorDot, { backgroundColor: listColor }]} />
-                    <Text style={[styles.headerTitle, { color: theme.text }]} numberOfLines={1}>
+                    <Text
+                        style={[styles.headerTitle, { color: theme.onSurface }]}
+                        numberOfLines={1}
+                    >
                         {list.name}
                     </Text>
                     <View style={styles.headerRight}>
@@ -95,7 +98,7 @@ export function BoardColumn({ list, tasks }: BoardColumnProps) {
                             <MaterialCommunityIcons
                                 name="dots-vertical"
                                 size={20}
-                                color={theme.textMuted}
+                                color={theme.onSurfaceVariant}
                             />
                         </Pressable>
                     </View>
@@ -103,7 +106,7 @@ export function BoardColumn({ list, tasks }: BoardColumnProps) {
 
                 {totalCount > 0 && (
                     <View style={styles.progressContainer}>
-                        <View style={[styles.progressTrack, { backgroundColor: theme.border }]}>
+                        <View style={[styles.progressTrack, { backgroundColor: theme.outline }]}>
                             <View
                                 style={[
                                     styles.progressFill,
@@ -114,7 +117,7 @@ export function BoardColumn({ list, tasks }: BoardColumnProps) {
                                 ]}
                             />
                         </View>
-                        <Text style={[styles.progressText, { color: theme.textMuted }]}>
+                        <Text style={[styles.progressText, { color: theme.onSurfaceVariant }]}>
                             {completedCount}/{totalCount} done
                         </Text>
                     </View>
@@ -125,13 +128,15 @@ export function BoardColumn({ list, tasks }: BoardColumnProps) {
                     style={({ pressed }) => [
                         styles.addTaskButton,
                         {
-                            borderColor: theme.border,
-                            backgroundColor: pressed ? `${theme.border}40` : 'transparent',
+                            borderColor: theme.outline,
+                            backgroundColor: pressed ? `${theme.outline}40` : 'transparent',
                         },
                     ]}
                 >
-                    <MaterialCommunityIcons name="plus" size={18} color={theme.textMuted} />
-                    <Text style={[styles.addTaskText, { color: theme.textMuted }]}>Add Task</Text>
+                    <MaterialCommunityIcons name="plus" size={18} color={theme.onSurfaceVariant} />
+                    <Text style={[styles.addTaskText, { color: theme.onSurfaceVariant }]}>
+                        Add Task
+                    </Text>
                 </Pressable>
 
                 <ScrollView
@@ -154,9 +159,9 @@ export function BoardColumn({ list, tasks }: BoardColumnProps) {
                             <MaterialCommunityIcons
                                 name="clipboard-text-outline"
                                 size={32}
-                                color={theme.textMuted}
+                                color={theme.onSurfaceVariant}
                             />
-                            <Text style={[styles.emptyText, { color: theme.textMuted }]}>
+                            <Text style={[styles.emptyText, { color: theme.onSurfaceVariant }]}>
                                 No tasks yet
                             </Text>
                         </View>

@@ -44,7 +44,6 @@ export function TaskCard({ task, listColor, onToggleComplete }: TaskCardProps) {
                 isDraggingRef.current = true;
             }}
             onDragEnd={() => {
-                // Small delay to prevent press from firing after drag ends
                 setTimeout(() => {
                     isDraggingRef.current = false;
                 }, 100);
@@ -57,20 +56,13 @@ export function TaskCard({ task, listColor, onToggleComplete }: TaskCardProps) {
                     styles.card,
                     {
                         backgroundColor: theme.surface,
-                        shadowColor: theme.text,
+                        borderColor: theme.outline,
+                        borderWidth: 1,
+                        borderLeftWidth: 4,
+                        borderLeftColor: listColor || theme.primary,
                     },
                 ]}
             >
-                <View
-                    style={[
-                        styles.accentStrip,
-                        {
-                            backgroundColor: listColor || theme.tint,
-                            opacity: isCompleted ? 0.4 : 1,
-                        },
-                    ]}
-                />
-
                 <View style={styles.cardContent}>
                     <Pressable
                         onPress={handleToggle}
@@ -78,15 +70,21 @@ export function TaskCard({ task, listColor, onToggleComplete }: TaskCardProps) {
                             styles.checkbox,
                             {
                                 backgroundColor: isCompleted
-                                    ? listColor || theme.tint
+                                    ? listColor || theme.primary
                                     : 'transparent',
-                                borderColor: isCompleted ? listColor || theme.tint : theme.border,
+                                borderColor: isCompleted
+                                    ? listColor || theme.primary
+                                    : theme.outline,
                                 transform: [{ scale: pressed ? 0.9 : 1 }],
                             },
                         ]}
                     >
                         {isCompleted && (
-                            <MaterialCommunityIcons name="check" size={14} color="#fff" />
+                            <MaterialCommunityIcons
+                                name="check"
+                                size={14}
+                                color={theme.onPrimary}
+                            />
                         )}
                     </Pressable>
 
@@ -95,7 +93,7 @@ export function TaskCard({ task, listColor, onToggleComplete }: TaskCardProps) {
                             style={[
                                 styles.taskName,
                                 {
-                                    color: theme.text,
+                                    color: theme.onSurface,
                                     textDecorationLine: isCompleted ? 'line-through' : 'none',
                                     opacity: isCompleted ? 0.5 : 1,
                                 },
@@ -109,7 +107,7 @@ export function TaskCard({ task, listColor, onToggleComplete }: TaskCardProps) {
                                 style={[
                                     styles.taskDescription,
                                     {
-                                        color: theme.textMuted,
+                                        color: theme.onSurfaceVariant,
                                         textDecorationLine: isCompleted ? 'line-through' : 'none',
                                         opacity: isCompleted ? 0.5 : 1,
                                     },
@@ -134,14 +132,6 @@ const styles = StyleSheet.create({
         borderRadius: borderRadius.md,
         marginBottom: spacing.sm,
         overflow: 'hidden',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 8,
-        elevation: 3,
-    },
-    accentStrip: {
-        height: 3,
-        width: '100%',
     },
     cardContent: {
         flexDirection: 'row',
