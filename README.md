@@ -1,23 +1,35 @@
 # Toodler
 
-## Description
-
-Toodler is a Kanban-style task management application built with React Native and Expo. This mobile application enables users to organize their projects using boards, lists, and tasks following the Kanban methodology. Developed as part of the Umbrella agency's project management initiative, Toodler allows users to create multiple boards for different projects, organize tasks within customizable lists, and track progress by moving tasks between lists.
-
-The application features full CRUD operations for boards, lists, and tasks, with additional enhancements including board templates for quick setup, persistent data storage, dark/light theme support, and a polished user interface with bottom sheet modals and form validation. Built with modern mobile development practices using Expo Router for file-based navigation, Zustand for state management, and TypeScript for type safety.
-
 ## Table of Contents
 
+- [Description](#description)
+- [Screenshots](#screenshots)
 - [Running the App](#running-the-app)
 - [Features](#features)
 - [Technologies Used](#technologies-used)
 - [Platform Support](#platform-support)
 - [Project Structure](#project-structure)
 - [Setup Instructions](#setup-instructions)
-- [Screenshots](#screenshots)
 - [Known Issues](#known-issues)
 - [Future Improvements](#future-improvements)
 - [Authors](#authors)
+
+## Description
+
+Toodler is a Kanban-style task management application built with React Native and Expo. This mobile application enables users to organize their projects using boards, lists, and tasks following the Kanban methodology. Developed as part of the Umbrella agency's project management initiative, Toodler allows users to create multiple boards for different projects, organize tasks within customizable lists, and track progress by moving tasks between lists.
+
+The application features full CRUD operations for boards, lists, and tasks, with additional enhancements including board templates for quick setup, persistent data storage, dark/light theme support, and a polished user interface with bottom sheet modals and form validation. Built with modern mobile development practices using Expo Router for file-based navigation, Zustand for state management, and TypeScript for type safety.
+
+## Screenshots
+
+|                                                  |                                                    |                                                |
+| ------------------------------------------------ | -------------------------------------------------- | ---------------------------------------------- |
+| **Boards list view**                             | **Board detail view with lists**                   | **Add board screen**                           |
+| ![Boards list view](docs/boards-screen.png)      | ![Board detail view](docs/single-board-screen.png) | ![Add board screen](docs/add-board-screen.png) |
+| **Edit board screen**                            | **Add list screen**                                | **Edit list screen**                           |
+| ![Edit board screen](docs/edit-board-screen.png) | ![Add list screen](docs/add-list-screen.png)       | ![Edit list screen](docs/edit-list-screen.png) |
+| **Add task screen**                              | **Edit task screen**                               |                                                |
+| ![Add task screen](docs/add-task-screen.png)     | ![Edit task screen](docs/edit-task-screen.png)     |                                                |
 
 ## Running the App
 
@@ -345,17 +357,6 @@ const resetStore = useStore(state => state.resetStore);
 - `npm run lint:fix` - Automatically fix ESLint issues
 - `npm run format` - Format code with Prettier
 - `npm run format:check` - Check code formatting
-
-## Screenshots
-
-|                                                  |                                                    |                                                |
-| ------------------------------------------------ | -------------------------------------------------- | ---------------------------------------------- |
-| **Boards list view**                             | **Board detail view with lists**                   | **Add board screen**                           |
-| ![Boards list view](docs/boards-screen.png)      | ![Board detail view](docs/single-board-screen.png) | ![Add board screen](docs/add-board-screen.png) |
-| **Edit board screen**                            | **Add list screen**                                | **Edit list screen**                           |
-| ![Edit board screen](docs/edit-board-screen.png) | ![Add list screen](docs/add-list-screen.png)       | ![Edit list screen](docs/edit-list-screen.png) |
-| **Add task screen**                              | **Edit task screen**                               |                                                |
-| ![Add task screen](docs/add-task-screen.png)     | ![Edit task screen](docs/edit-task-screen.png)     |                                                |
 
 ## Known Issues
 
